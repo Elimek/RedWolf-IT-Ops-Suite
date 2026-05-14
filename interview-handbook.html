@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RedWolf IT Officer 面试作战手册</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232735;
+    --border: #2e3348;
+    --text: #e4e6f0;
+    --text2: #9498b3;
+    --accent: #ff4757;
+    --accent2: #ff6b81;
+    --blue: #3742fa;
+    --blue2: #5352ed;
+    --green: #2ed573;
+    --green2: #7bed9f;
+    --orange: #ff9f43;
+    --orange2: #feca57;
+    --purple: #a55eea;
+    --cyan: #18dcff;
+    --red: #ee5a24;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    line-height: 1.7;
+    font-size: 14px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1a1d27 0%, #2e3348 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255,71,87,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px; }
+  .header h1 span { color: var(--accent); }
+  .header .subtitle { color: var(--text2); font-size: 15px; }
+  .header .meta {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .header .meta span {
+    background: var(--surface2);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .header .meta span b { color: var(--orange); }
+
+  /* Navigation */
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 30px;
+    padding: 16px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .nav a {
+    color: var(--text2);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    background: var(--surface2);
+    transition: all 0.2s;
+  }
+  .nav a:hover { color: var(--accent); background: rgba(255,71,87,0.1); }
+
+  /* Sections */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 30px;
+    margin-bottom: 24px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 18px; font-weight: 600; }
+  .section-header p { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  /* Cards */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .card h4 { font-size: 13px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
+  .card .value { font-size: 22px; font-weight: 700; }
+  .card .note { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+  /* Info tables */
+  .info-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  .info-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    vertical-align: top;
+  }
+  .info-table td:first-child {
+    color: var(--text2);
+    font-weight: 500;
+    width: 160px;
+    white-space: nowrap;
+  }
+  .info-table tr:last-child td { border-bottom: none; }
+
+  /* Highlight box */
+  .highlight {
+    background: rgba(255,71,87,0.08);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    border-radius: 0 10px 10px 0;
+    margin: 14px 0;
+    font-size: 13px;
+  }
+  .highlight.green {
+    background: rgba(46,213,115,0.08);
+    border-left-color: var(--green);
+  }
+  .highlight.blue {
+    background: rgba(55,66,250,0.08);
+    border-left-color: var(--blue);
+  }
+  .highlight.orange {
+    background: rgba(255,159,67,0.08);
+    border-left-color: var(--orange);
+  }
+  .highlight strong { color: var(--text); }
+
+  /* Tags */
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+  .tag {
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .tag-red { background: rgba(255,71,87,0.15); color: #ff6b81; }
+  .tag-green { background: rgba(46,213,115,0.15); color: #7bed9f; }
+  .tag-blue { background: rgba(55,66,250,0.15); color: #747dff; }
+  .tag-orange { background: rgba(255,159,67,0.15); color: #feca57; }
+  .tag-purple { background: rgba(165,94,234,0.15); color: #cd9cff; }
+
+  /* Talk points */
+  .talk-point {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 12px 0;
+  }
+  .talk-point .scenario {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .talk-point .question {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .talk-point .answer {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+  .talk-point .answer em {
+    color: var(--green);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  /* Priority meter */
+  .priority {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .priority-high { background: rgba(255,71,87,0.15); color: #ff6b81; }
+  .priority-mid { background: rgba(255,159,67,0.15); color: #feca57; }
+  .priority-low { background: rgba(46,213,115,0.15); color: #7bed9f; }
+
+  /* Subsection */
+  .subsection {
+    margin-top: 20px;
+    margin-bottom: 12px;
+  }
+  .subsection h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .subsection h3 .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* List */
+  ul.styled {
+    list-style: none;
+    padding: 0;
+  }
+  ul.styled li {
+    padding: 6px 0 6px 20px;
+    position: relative;
+    font-size: 13px;
+    color: var(--text2);
+    border-bottom: 1px solid rgba(46,51,72,0.5);
+  }
+  ul.styled li:last-child { border-bottom: none; }
+  ul.styled li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  ul.styled li strong { color: var(--text); }
+
+  /* Comparison */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 14px 0;
+  }
+  .comp-col {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .comp-col h4 { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  .comp-col ul { list-style: none; padding: 0; }
+  .comp-col li {
+    font-size: 12px;
+    color: var(--text2);
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .comp-col li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 30px;
+    color: var(--text2);
+    font-size: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .comparison { grid-template-columns: 1fr; }
+    .header h1 { font-size: 22px; }
+    .section { padding: 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <h1><span>RedWolf</span> IT Officer 面试作战手册</h1>
+  <p class="subtitle">300% 深度情报 — 让面试官觉得你比HR还了解他们</p>
+  <div class="meta">
+    <span>目标岗位: <b>Assistant IT Officer / IT Officer</b></span>
+    <span>公司: <b>RedWolf Airsoft Specialist Ltd</b></span>
+    <span>地点: <b>Kwai Hing, Hong Kong</b></span>
+    <span>情报更新: <b>2026-05-15</b></span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <a href="#company">公司画像</a>
+  <a href="#tech">技术情报</a>
+  <a href="#pain">IT痛点</a>
+  <a href="#industry">行业认知</a>
+  <a href="#ai">AI机会</a>
+  <a href="#talking">杀手回答</a>
+  <a href="#questions">反问清单</a>
+  <a href="#strategy">面试策略</a>
+</div>
+
+<!-- 1. COMPANY PROFILE -->
+<div class="section" id="company">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,71,87,0.15);">🏢</div>
+    <div>
+      <h2>公司深度画像</h2>
+      <p>不是"我知道RedWolf卖气枪"，而是"我了解他们的每一个毛孔"</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>成立时间</h4>
+      <div class="value" style="color:var(--accent);">1998年</div>
+      <div class="note">2000年正式注册 HK CR#0731380</div>
+    </div>
+    <div class="card">
+      <h4>公司规模</h4>
+      <div class="value" style="color:var(--blue);">51-200人</div>
+      <div class="note">LinkedIn数据，HQ葵涌</div>
+    </div>
+    <div class="card">
+      <h4>预估营收</h4>
+      <div class="value" style="color:var(--green);">~$21.5M USD</div>
+      <div class="note">RocketReach估算，仅供参考</div>
+    </div>
+    <div class="card">
+      <h4>产品SKU</h4>
+      <div class="value" style="color:var(--orange);">15,000+</div>
+      <div class="note">覆盖35+品牌</div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--accent);"></span>全球布局</h3>
+    <table class="info-table">
+      <tr><td>香港总部</td><td>葵涌東海工业大厦 7/F A1座，29-39葵昌路<br><span style="color:var(--text2);font-size:12px;">运营中心 + 仓储</span></td></tr>
+      <tr><td>英国办公室</td><td>Unit C1, Northway Trading Estate, Tewkesbury, Gloucestershire GL20 8JH<br><span style="color:var(--text2);font-size:12px;">欧洲分销</span></td></tr>
+      <tr><td>美国分销中心</td><td>加州（具体地址未公开）<br><span style="color:var(--text2);font-size:12px;">北美物流 + SB-199合规</span></td></tr>
+      <tr><td>西班牙物流</td><td>物流中心（具体地址未公开）<br><span style="color:var(--text2);font-size:12px;">南欧配送</span></td></tr>
+      <tr><td>零售门店</td><td>Airsoft Surgeon — 中环精品店<br><span style="color:var(--text2);font-size:12px;">驻场枪匠 25+年经验</span></td></tr>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--blue);"></span>业务模式：垂直整合</h3>
+    <div class="comparison">
+      <div class="comp-col">
+        <h4 style="color:var(--green);">自有业务</h4>
+        <ul>
+          <li style="color:var(--green);">■</li><li><strong>RWA 自有制造</strong> — 高端收藏级气枪复制品</li>
+          <li style="color:var(--green);">■</li><li><strong>Airsoft Surgeon</strong> — 定制枪械改装服务</li>
+          <li style="color:var(--green);">■</li><li><strong>Wolf Points</strong> — 忠诚度积分计划</li>
+          <li style="color:var(--green);">■</li><li><strong>RWTV</strong> — YouTube内容制作 (~400K订阅)</li>
+        </ul>
+      </div>
+      <div class="comp-col">
+        <h4 style="color:var(--orange);">渠道分布</h4>
+        <ul>
+          <li style="color:var(--orange);">■</li><li><strong>自有站</strong> — redwolfairsoft.com (Magento)</li>
+          <li style="color:var(--orange);">■</li><li><strong>Amazon</strong> — 美国市场</li>
+          <li style="color:var(--orange);">■</li><li><strong>京东</strong> — 红狼REDWOLF旗舰店</li>
+          <li style="color:var(--orange);">■</li><li><strong>批发</strong> — wholesale@redwolfairsoft.com</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--orange);"></span>独家授权品牌（不是谁都有的）</h3>
+    <div class="tags">
+      <span class="tag tag-red">Nighthawk Custom</span>
+      <span class="tag tag-red">Agency Arms</span>
+      <span class="tag tag-purple">Battle Arms Development</span>
+      <span class="tag tag-purple">SPS</span>
+      <span class="tag tag-blue">Samson Manufacturing</span>
+      <span class="tag tag-blue">Caspian Arms</span>
+      <span class="tag tag-orange">Sabre Defense</span>
+    </div>
+    <div class="highlight green">
+      <strong>面试话术：</strong>"RedWolf最独特的地方在于垂直整合——从自有制造RWA，到批发分销，到零售（自有站+Amazon+京东），到内容制作RWTV，还有定制改装Airsoft Surgeon。这种模式在气枪零售商里很少见。"
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--purple);"></span>荣誉与行业地位</h3>
+    <ul class="styled">
+      <li>连续多年获 Popular Airsoft <strong>Players' Choice Awards "Best Retailer"</strong></li>
+      <li>RWTV 获 <strong>"Best Podcast"</strong> 全球奖</li>
+      <li><strong>IWA Outdoor Classics 2026</strong> 展商（纽伦堡），展示BREN新品</li>
+      <li>赞助赛事：Operation Savage Garden, Iron Angel, Reindeer Games (德州), Sennybridge (英国)</li>
+      <li>Heritage 百人赛赞助 20+年连续</li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--cyan);"></span>关键人物（知道名字 = 加分）</h3>
+    <table class="info-table">
+      <tr><td>VP of Sales</td><td>Yann-Pierrer Englibert</td></tr>
+      <tr><td>Sales Director</td><td>Maxim Mishchenko</td></tr>
+      <tr><td>Content Merchandiser / Presenter</td><td>Andrew Duthie（RWTV出镜人）</td></tr>
+      <tr><td>Airsoft Surgeon 枪匠</td><td>25+年经验的驻场专家（公开活动露面）</td></tr>
+      <tr><td>博客主要作者</td><td>Kieron Horne（8/10近期文章）</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 2. TECH INTELLIGENCE -->
+<div class="section" id="tech">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(55,66,250,0.15);">⚙️</div>
+    <div>
+      <h2>技术情报（你可以展示"做过功课"的部分）</h2>
+      <p>不是猜的，是实际从网站分析出来的</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--blue);"></span>电商平台：Magento 2 (Adobe Commerce)</h3>
+    <div class="highlight blue">
+      <strong>证据链：</strong>URL结构 /catalogsearch/advanced/ + /customer/account/login/ → 静态资源路径 static/version{hash}/frontend/<strong style="color:var(--cyan)">Redwolf/blank</strong>/en_US/ → 图片缓存 /catalog/product/cache/ → "cookies disabled"提示 → 全部是Magento 2标志性特征
+    </div>
+    <table class="info-table">
+      <tr><td>自定义主题</td><td><strong>Redwolf/blank</strong> — 基于Magento blank父主题定制</td></tr>
+      <tr><td>已确认扩展</td><td><strong>Sparsh Banner</strong> — 轮播/Banner管理模块</td></tr>
+      <tr><td>服务器</td><td>IP 18.166.142.219（AWS香港区域）</td></tr>
+      <tr><td>CDN</td><td>专用媒体CDN: <strong style="color:var(--cyan)">media-cdn.redwolfairsoft.com</strong></td></tr>
+      <tr><td>图片策略</td><td>桌面 _hero.jpg + 移动端 _mobile.jpg 分离投放</td></tr>
+      <tr><td>登录方式</td><td>Facebook OAuth + Google OAuth</td></tr>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--green);"></span>多语言 / 多货币配置</h3>
+    <div class="comparison">
+      <div class="comp-col">
+        <h4 style="color:var(--cyan);">5种语言</h4>
+        <ul>
+          <li style="color:var(--cyan);">■</li><li>English（默认）</li>
+          <li style="color:var(--cyan);">■</li><li>Francais</li>
+          <li style="color:var(--cyan);">■</li><li>Espanol</li>
+          <li style="color:var(--cyan);">■</li><li>日本語</li>
+          <li style="color:var(--cyan);">■</li><li>한국어</li>
+        </ul>
+      </div>
+      <div class="comp-col">
+        <h4 style="color:var(--orange);">4种货币</h4>
+        <ul>
+          <li style="color:var(--orange);">■</li><li>USD（默认）</li>
+          <li style="color:var(--orange);">■</li><li>GBP</li>
+          <li style="color:var(--orange);">■</li><li>EUR</li>
+          <li style="color:var(--orange);">■</li><li>HKD</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--accent);"></span>支付方式</h3>
+    <div class="tags">
+      <span class="tag tag-green">Visa</span>
+      <span class="tag tag-green">Mastercard</span>
+      <span class="tag tag-green">PayPal</span>
+      <span class="tag tag-green">PayPal Credit</span>
+      <span class="tag tag-orange">Bank Telegraphic Transfer (+$20)</span>
+      <span class="tag tag-purple">Gift Cards</span>
+    </div>
+    <div class="highlight orange">
+      <strong>行业知识加分点：</strong>气枪类商品是支付处理的"高风险"类别——Stripe和PayPal会自动冻结或拒绝气枪商家的交易。RedWolf能接受PayPal说明他们有<strong>特殊安排</strong>。这是整个行业最大的运营风险之一。
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--red);"></span>网站安全现状（你能主动指出的改进点）</h3>
+    <table class="info-table">
+      <tr><td>整体安全评分</td><td><span style="color:var(--accent);">40/100</span> — 低于行业平均</td></tr>
+      <tr><td>缺失安全头</td><td><span style="color:var(--accent);">HSTS, CSP, Referrer-Policy</span> 全部缺失</td></tr>
+      <tr><td>SSL</td><td>Comodo签发 ✓</td></tr>
+      <tr><td>PCI合规</td><td>网站显示徽章 ✓</td></tr>
+      <tr><td>安全黑名单</td><td>出现在1个安全黑名单上 <span style="color:var(--accent);">⚠</span></td></tr>
+    </table>
+    <div class="highlight">
+      <strong>面试话术：</strong>"我注意到RedWolf网站的安全评分是40/100，缺少HSTS和CSP头。这对一个处理信用卡交易的电商网站来说是个需要优先处理的问题。加上HSTS和CSP只需要在服务器配置层面改动，见效快。"
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--purple);"></span>产品目录组织（理解他们的数据复杂度）</h3>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:10px;">8大顶级分类 → 3-4层深度Mega Menu → 按品牌/平台/型号多维交叉</p>
+    <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+      <div class="card" style="padding:12px;">
+        <h4 style="font-size:11px;">Airsoft Guns</h4>
+        <div style="font-size:11px;color:var(--text2);">按构造 / 按动力 / 按型号 / 特殊品类</div>
+      </div>
+      <div class="card" style="padding:12px;">
+        <h4 style="font-size:11px;">Parts & Upgrades</h4>
+        <div style="font-size:11px;color:var(--text2);">内部件 / 外部件 / 按OEM品牌分</div>
+      </div>
+      <div class="card" style="padding:12px;">
+        <h4 style="font-size:11px;">Accessories</h4>
+        <div style="font-size:11px;color:var(--text2);">瞄具 / 灯具 / 消音器 / 枪皮</div>
+      </div>
+      <div class="card" style="padding:12px;">
+        <h4 style="font-size:11px;">BB/Battery/Gas</h4>
+        <div style="font-size:11px;color:var(--text2);">LiPo/Li-Ion/NiCd + 4.5/6/8mm弹</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--cyan);"></span>内容生态</h3>
+    <table class="info-table">
+      <tr><td>YouTube (RWTV)</td><td><strong style="color:var(--accent);">~400K订阅</strong> — 产品评测、Top10、游戏实况</td></tr>
+      <tr><td>博客</td><td><strong>114篇文章</strong> — About Airsoft(42) / How To(39) / Top Picks(35) / Reviews(6)</td></tr>
+      <tr><td>Facebook</td><td><strong>57,000+ 评价</strong>，4.3/5.0 评分</td></tr>
+      <tr><td>Instagram</td><td>@redwolfairsoftofficial</td></tr>
+      <tr><td>内容策略</td><td>SEO驱动漏斗 → 教育内容 → 产品转化</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 3. PAIN POINTS -->
+<div class="section" id="pain">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,159,67,0.15);">🔥</div>
+    <div>
+      <h2>客户评价揭示的IT痛点</h2>
+      <p>从Trustpilot/ResellerRatings/论坛提取的真实客户反馈</p>
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">痛点 1 <span class="priority priority-high">高优先级</span></div>
+    <div class="question">邮件回复慢 → 客服系统效率问题</div>
+    <div class="answer">
+      多个平台有客户反映"邮件回复慢"或"无回复"。这直接指向 <em>工单管理系统</em> 的效率问题。如果RedWolf的客服还在用传统邮件处理，一个AI工单分类+自动分派系统能显著提升响应速度——这正是你Demo里AI Classifier模块展示的能力。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">痛点 2 <span class="priority priority-high">高优先级</span></div>
+    <div class="question">发错货 → 仓储/拣货流程问题</div>
+    <div class="answer">
+      客户反映"收到错误的商品"。15,000+ SKU + 复杂的兼容性关系（这个弹匣适配哪几款枪），拣货错误率会随SKU数量指数级上升。这需要 <em>条码扫描验证系统 + 兼容性数据库</em> 来在发货前自动校验。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">痛点 3 <span class="priority priority-mid">中优先级</span></div>
+    <div class="question">产品图片与实物不符 → 合规改动的展示问题</div>
+    <div class="answer">
+      有客户投诉"网站图片没有橙色枪口，但收到的是有橙色枪口的"。这其实是 <em>合规要求</em>（美国联邦法律要求orange tip），但网站没有针对不同地区展示不同的合规版产品图。需要在Magento里实现按地区的 <em>产品图片变体自动切换</em>。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">痛点 4 <span class="priority priority-mid">中优先级</span></div>
+    <div class="question">国际物流慢 → 期望值管理</div>
+    <div class="answer">
+      从香港发货到全球各地，SureShip 7-21天、Express 3-7天。客户对物流时效的期望管理需要 <em>实时追踪系统 + 自动状态通知</em>，减少"我的包裹在哪"的客服咨询量。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">痛点 5 <span class="priority priority-low">低优先级但加分</span></div>
+    <div class="question">网站安全评分低 40/100</div>
+    <div class="answer">
+      缺少 HSTS、CSP、Referrer-Policy 安全头。出现在1个安全黑名单上。这对处理信用卡交易的电商网站来说是 <em>合规风险</em>。修复成本很低但效果显著。
+    </div>
+  </div>
+</div>
+
+<!-- 4. INDUSTRY -->
+<div class="section" id="industry">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(165,94,234,0.15);">🌍</div>
+    <div>
+      <h2>行业认知（让面试官觉得你懂大格局）</h2>
+      <p>气枪零售行业的宏观图景</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>全球市场规模 (2025)</h4>
+      <div class="value" style="color:var(--purple);">$2.7B</div>
+      <div class="note">2035年预计 $4.7B，CAGR 4.9%</div>
+    </div>
+    <div class="card">
+      <h4>线上销售占比</h4>
+      <div class="value" style="color:var(--cyan);">25-39%</div>
+      <div class="note">快速增长中，线下仍占主导</div>
+    </div>
+    <div class="card">
+      <h4>品类份额</h4>
+      <div class="value" style="color:var(--green);">AEG 48.6%</div>
+      <div class="note">电动枪主导，Gas 33.1%增长最快</div>
+    </div>
+    <div class="card">
+      <h4>区域分布</h4>
+      <div class="value" style="color:var(--orange);">北美 36.8%</div>
+      <div class="note">欧洲28.5% / 亚太24.7%（增速最快）</div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--accent);"></span>行业最大痛点：支付处理（说这个会震惊面试官）</h3>
+    <div class="highlight">
+      <strong>核心问题：</strong>主流支付处理器（Stripe、PayPal、Square）<strong>明确禁止或限制</strong>枪械/战术/气枪类商户。即使气枪在联邦法律下不是枪支，自动风控系统仍会标记并冻结这些商家——<strong>资金会被无预警冻结</strong>。<br><br>
+      <strong>RedWolf能接受PayPal说明他们有特殊的高风险支付处理协议。</strong>这是整个气枪零售行业最大的运营风险。
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--orange);"></span>国际物流复杂度：50+国家的法规碎片化</h3>
+    <div class="comparison">
+      <div class="comp-col">
+        <h4 style="color:var(--accent);">完全禁止</h4>
+        <ul>
+          <li style="color:var(--accent);">■</li><li>澳大利亚、新加坡、马来西亚</li>
+          <li style="color:var(--accent);">■</li><li>中国、印度、泰国</li>
+          <li style="color:var(--accent);">■</li><li>阿联酋、以色列</li>
+        </ul>
+      </div>
+      <div class="comp-col">
+        <h4 style="color:var(--orange);">限制（各有不同要求）</h4>
+        <ul>
+          <li style="color:var(--orange);">■</li><li>加拿大: 366fps+才能进口</li>
+          <li style="color:var(--orange);">■</li><li>英国: UKARA会员 or 双色</li>
+          <li style="color:var(--orange);">■</li><li>德国: F标 + 全自动≤0.5J</li>
+          <li style="color:var(--orange);">■</li><li>日本/韩国: ≤1J/≤0.2J</li>
+        </ul>
+      </div>
+    </div>
+    <div class="highlight blue">
+      <strong>IT含义：</strong>每个订单都必须根据目的国法规进行合规检查。这需要一个 <em>国家-产品合规数据库</em>，且需要持续更新。Magento里可能需要自定义模块来实现"按国家隐藏/显示产品"功能。
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--green);"></span>主要竞争对手（知道对手是谁）</h3>
+    <div class="comparison">
+      <div class="comp-col">
+        <h4 style="color:var(--cyan);">北美</h4>
+        <ul>
+          <li style="color:var(--cyan);">■</li><li><strong>Evike</strong> (加州, 63人, 自建平台)</li>
+          <li style="color:var(--cyan);">■</li><li><strong>Airsoft Megastore</strong> (加州)</li>
+          <li style="color:var(--cyan);">■</li><li><strong>Airsoft GI</strong> (加州, ~2003成立)</li>
+        </ul>
+      </div>
+      <div class="comp-col">
+        <h4 style="color:var(--orange);">香港本地</h4>
+        <ul>
+          <li style="color:var(--orange);">■</li><li><strong>UN Company</strong> (湾仔, 实体+线上)</li>
+          <li style="color:var(--orange);">■</li><li><strong>Ehobby Asia</strong> (国际出货)</li>
+          <li style="color:var(--orange);">■</li><li><strong>Wargame Club</strong></li>
+        </ul>
+      </div>
+      <div class="comp-col">
+        <h4 style="color:var(--purple);">欧洲</h4>
+        <ul>
+          <li style="color:var(--purple);">■</li><li><strong>Gunfire</strong> (波兰, 自建平台)</li>
+          <li style="color:var(--purple);">■</li><li><strong>Patrol Base</strong> (英国最大)</li>
+        </ul>
+      </div>
+      <div class="comp-col">
+        <h4 style="color:var(--green);">关键趋势</h4>
+        <ul>
+          <li style="color:var(--green);">■</li><li>大部分竞品用 <strong>自建平台</strong></li>
+          <li style="color:var(--green);">■</li><li>RedWolf用Magento算少数派</li>
+          <li style="color:var(--green);">■</li><li>YouTube是核心竞争武器</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. AI OPPORTUNITIES -->
+<div class="section" id="ai">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(46,213,115,0.15);">🤖</div>
+    <div>
+      <h2>AI转型机会（对应JD的 AI Transformation 职责）</h2>
+      <p>JD要求"协助IT经理研究AI模型优化流程"——你要有具体的想法</p>
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">机会 1 <span class="priority priority-high">最高ROI</span></div>
+    <div class="question">AI客服机器人 — 兼容性问答</div>
+    <div class="answer">
+      气枪行业最常见的客服问题是 <em>"这个零件能不能装在我的枪上？"</em> 15,000+ SKU的兼容性关系极其复杂。训练一个基于产品数据库的AI问答系统，可以自动回答80%的常见兼容性问题，大幅减少人工客服压力。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">机会 2 <span class="priority priority-high">高价值</span></div>
+    <div class="question">智能物流合规检查 — 订单自动审查</div>
+    <div class="answer">
+      50+国家各有不同的气枪进口法规。目前可能是人工检查每个国际订单的合规性。可以用AI自动识别产品属性（FPS、材质、外观）+ 目的国法规数据库，实现 <em>订单级自动合规预检</em>，减少海关扣留率。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">机会 3 <span class="priority priority-mid">中价值</span></div>
+    <div class="question">AI需求预测 — 库存优化</div>
+    <div class="answer">
+      15,000+ SKU，季节性需求波动大（户外季节 vs 室内），35+品牌从日本/中国/台湾/欧洲供货。AI可以基于历史销售数据、趋势信号、赛事日历（ sponsored events）做 <em>SKU级需求预测</em>，优化补货节奏减少缺货和积压。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">机会 4 <span class="priority priority-mid">中价值</span></div>
+    <div class="question">多语言内容自动生成</div>
+    <div class="answer">
+      RedWolf支持5种语言，但产品描述的本地化不仅是翻译——气枪术语在不同地区不同（如日语/韩语有独特术语）。AI可以基于已有的英文描述，结合 <em>地区术语库</em> 自动生成更准确的多语言内容，减少人工翻译成本。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">机会 5 <span class="priority priority-low">长期价值</span></div>
+    <div class="question">AI产品图片合规变体</div>
+    <div class="answer">
+      客户投诉"图片没有橙色枪口但实物有"——可以用AI图像处理自动为不同地区生成 <em>合规版产品图</em>（如美国版加orange tip、英国版加双色、德国版加F标），从源头解决产品展示与实物不符的问题。
+    </div>
+  </div>
+</div>
+
+<!-- 6. TALKING POINTS -->
+<div class="section" id="talking">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,71,87,0.15);">🎯</div>
+    <div>
+      <h2>杀手级回答模板</h2>
+      <p>不是背答案，是理解思路后用自己的话说出来</p>
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">自我介绍 (2分钟版)</div>
+    <div class="question">"Tell me about yourself"</div>
+    <div class="answer">
+      "我在香港政府项目有2.5年企业交付经验，负责Java/Python后端开发和系统集成。我的MSc是HKBU的IT管理，本科是新疆大学信息安全。<br><br>
+      我一直在关注RedWolf——你们是1998年成立的气枪零售先驱，现在用Magento 2做全球电商，支持5种语言4种货币，SKU超过15,000。我特别感兴趣的是你们的垂直整合模式——从自有品牌RWA到Airsoft Surgeon定制改装到RWTV内容制作，这在行业里很少见。<br><br>
+      我做的这个Demo就是围绕你们实际业务场景设计的——电商、监控、AI工单分类、IT运维工具，都是IT Officer日常会涉及的工作。"
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">JD匹配</div>
+    <div class="question">"Why do you think you're a good fit for this role?"</div>
+    <div class="answer">
+      "你们的JD有5个核心职责，我可以逐个对应：<br><br>
+      <em>1. Platform Development</em> — 我有HTML/CSS/JS/PHP的全栈能力，而且我专门研究过你们的Magento 2架构，了解EAV模型和性能优化。<br>
+      <em>2. Platform Maintenance</em> — 我的Demo里有完整的监控Dashboard，CPU/内存/网络/磁盘实时监控加告警系统。<br>
+      <em>3. Infrastructure Management</em> — VPN管理、网络扫描、服务器维护，Demo里都有对应模块。<br>
+      <em>4. Technical Support</em> — 我有2.5年一线交付经验，理解用户需求和技术支持的工作流。<br>
+      <em>5. AI Transformation</em> — 这是我最有热情的方向。我已经在研究气枪行业的AI应用场景，比如兼容性问答机器人、物流合规自动检查。"
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">技术深度</div>
+    <div class="question">"你对Magento熟悉吗？"</div>
+    <div class="answer">
+      "我分析过RedWolf的网站——你们用的是Magento 2，自定义主题Redwolf/blank，Sparsh Banner扩展，还有专用的媒体CDN。我了解Magento的EAV数据库模型在15,000+ SKU量级下面临的性能挑战——一个有20个属性的1000产品分类页可能产生上万次表连接。<br><br>
+      常见的优化方案包括：反规范化摘要表、Elasticsearch热温冷分层、Varnish + ESI边缘缓存。Magento 2的索引更新在大数据量下可能要数小时，这些都需要持续监控和维护。<br><br>
+      PHP是Magento的核心语言，我在政府项目中也有PHP开发经验，Linux环境下调试部署都是日常。"
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">业务理解</div>
+    <div class="question">"你觉得RedWolf面临的最大IT挑战是什么？"</div>
+    <div class="answer">
+      "我觉得有三个层面：<br><br>
+      <em>第一，多渠道数据同步。</em>你们同时在自有Magento站、Amazon和京东销售，15,000+ SKU的库存和订单需要实时同步。任何一个渠道的库存不准都会导致超卖或错失销售。<br><br>
+      <em>第二，国际合规自动化。</em>50+国家各有不同的气枪进口法规，目前可能部分依赖人工审核。自动化合规检查不仅能减少错误发货，还能降低海关扣留率。<br><br>
+      <em>第三，客户服务效率。</em>从客户评价来看，邮件回复速度有改善空间。气枪行业最常见的客服问题是零件兼容性咨询，这类问题可以用AI基于产品数据库自动回答。"
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">AI愿景</div>
+    <div class="question">"你对AI在RedWolf的应用有什么想法？"</div>
+    <div class="answer">
+      "我不会泛泛而谈'用AI提高效率'，我会从具体场景切入：<br><br>
+      <em>最高优先级</em>——兼容性AI客服。气枪玩家最常问的就是'这个零件能不能装在我的枪上'，15,000 SKU的兼容性矩阵人工维护不现实，但用AI + 产品数据库可以自动回答80%这类问题。<br><br>
+      <em>第二优先级</em>——物流合规自动检查。每个国际订单的目的国法规都不同，AI可以基于产品属性自动判断是否合规发货。<br><br>
+      <em>第三优先级</em>——多语言内容生成。你们支持5种语言，但气枪术语的地区差异很大，AI结合术语库可以提升本地化质量。<br><br>
+      我的Demo里的AI Classifier模块就是用关键词 + 语义分析做工单自动分类的概念验证。"
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">安全性</div>
+    <div class="question">"你注意到我们网站有什么问题吗？"</div>
+    <div class="answer">
+      "我研究过RedWolf的网站安全状况——安全评分大约40/100，主要缺失HSTS、Content-Security-Policy和Referrer-Policy这三个安全头。对于一个处理信用卡交易的Magento电商来说，这些是应该优先配置的。<br><br>
+      加HSTS可以防止SSL降级攻击，加CSP可以防止XSS注入，这些都是Nginx配置层面的改动，实施成本低但安全收益高。另外，网站出现在一个安全黑名单上，这个也需要排查原因。"
+    </div>
+  </div>
+</div>
+
+<!-- 7. QUESTIONS TO ASK -->
+<div class="section" id="questions">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(24,220,255,0.15);">❓</div>
+    <div>
+      <h2>反问清单（让面试官刮目相看）</h2>
+      <p>问的问题比答的更能展现你的深度</p>
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">显示技术深度</div>
+    <div class="question">"你们目前的Magento版本是？有没有计划做Headless Commerce或者PWA改造？"</div>
+    <div class="answer">
+      <em>目的：</em>展示你了解Magento生态和现代电商架构趋势。Headless + PWA对RedWolf的国际用户（不同网络质量）特别有价值。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">显示业务理解</div>
+    <div class="question">"你们的Amazon和京东渠道跟Magento站之间的库存是怎么同步的？有遇到超卖问题吗？"</div>
+    <div class="answer">
+      <em>目的：</em>直击多渠道运营的核心痛点。这证明你理解他们的业务模式不仅是"一个网站"。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">显示AI思维</div>
+    <div class="question">"你们现在客服团队处理兼容性咨询大概占多少比例？有没有考虑用AI来做初步筛选？"</div>
+    <div class="answer">
+      <em>目的：</em>展示你不仅了解AI，还找到了行业痛点的具体AI应用场景。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">显示安全意识</div>
+    <div class="question">"你们目前用什么方式管理国际订单的合规检查？是人工还是有系统辅助？"</div>
+    <div class="answer">
+      <em>目的：</em>间接展示你研究了他们的物流合规复杂性，同时引出自动化机会。
+    </div>
+  </div>
+
+  <div class="talk-point">
+    <div class="scenario">显示个人兴趣</div>
+    <div class="question">"我注意到你们今年在IWA展上展示了BREN新品和Korth左轮——RWA的自有产品线未来有什么扩展计划？"</div>
+    <div class="answer">
+      <em>目的：</em>这句问完面试官会愣住——因为你居然关注到他们最近的展会动态。这种程度的功课几乎没人做过。
+    </div>
+  </div>
+</div>
+
+<!-- 8. STRATEGY -->
+<div class="section" id="strategy">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,159,67,0.15);">📋</div>
+    <div>
+      <h2>面试策略总览</h2>
+      <p>框架性指导，不是死板的脚本</p>
+    </div>
+  </div>
+
+  <div class="highlight green">
+    <strong>核心定位：</strong>你不是"来求职的"，你是"来帮他们解决问题的"。每一个回答都要围绕"我研究了你们的业务，我理解你们的痛点，我能帮到你们"来展开。
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--green);"></span>要说的关键词（自然插入，不是背诵）</h3>
+    <div class="tags">
+      <span class="tag tag-green">Magento 2</span>
+      <span class="tag tag-green">Redwolf/blank 主题</span>
+      <span class="tag tag-green">EAV模型</span>
+      <span class="tag tag-green">15,000 SKU</span>
+      <span class="tag tag-blue">media-cdn.redwolfairsoft.com</span>
+      <span class="tag tag-blue">AWS香港区域</span>
+      <span class="tag tag-blue">Sparsh Banner</span>
+      <span class="tag tag-orange">50+国家合规</span>
+      <span class="tag tag-orange">支付处理风险</span>
+      <span class="tag tag-orange">兼容性问答</span>
+      <span class="tag tag-purple">IWA 2026</span>
+      <span class="tag tag-purple">Nighthawk Custom</span>
+      <span class="tag tag-purple">垂直整合</span>
+      <span class="tag tag-red">HSTS/CSP</span>
+      <span class="tag tag-red">安全评分40/100</span>
+      <span class="tag tag-red">AI合规检查</span>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--accent);"></span>绝对不要说的</h3>
+    <ul class="styled">
+      <li>不要说"我做过类似的项目"然后泛泛而谈 <strong>→ 要具体到"我注意到你们..."</strong></li>
+      <li>不要批评他们的网站 <strong>→ 用"改进建议"的语气，不是"问题"</strong></li>
+      <li>不要炫耀AI技术细节 <strong>→ 面试官是IT Manager，他要的是能落地的人</strong></li>
+      <li>不要提竞品的具体技术优势 <strong>→ 聚焦在RedWolf自己的机会上</strong></li>
+      <li>不要主动提薪资期望太早 <strong>→ 等他们问</strong></li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="dot" style="background:var(--cyan);"></span>你的独特优势</h3>
+    <div class="highlight blue">
+      <strong>语言：</strong>中文母语 + 英文专业水平 + 粤语基础 — 匹配JD的"English and Cantonese"要求，同时你是新疆人（少数民族背景）可能是个加分话题<br><br>
+      <strong>地域：</strong>你在香港3.5年 + IANG签证 — 可以立即到岗，葵涌就是你们办公室所在地<br><br>
+      <strong>认知：</strong>你同时了解气枪行业 + 电商平台 + AI — 这个组合在IT Officer候选人里几乎不存在<br><br>
+      <strong>态度：</strong>你做了其他候选人都不会做的功课——研究他们的技术栈、分析竞品、识别痛点、提出AI方案
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>RedWolf IT Officer 面试作战手册 | 情报来源: 公司官网分析 + 第三方数据 + 竞品研究 | 2026-05-15</p>
+  <p style="margin-top:6px;color:var(--text2);">所有信息基于公开渠道获取，仅供面试准备使用</p>
+</div>
+
+</div>
+</body>
+</html>
