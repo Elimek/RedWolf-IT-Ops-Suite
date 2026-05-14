@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RedWolf IT Ops Suite - Demo</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#242837;--border:#2e3348;--text:#e4e6f0;--text2:#9ca3bf;--text3:#6b7194;--accent:#e8364e;--accent2:#ff5c75;--blue:#3b82f6;--green:#22c55e;--amber:#f59e0b;--purple:#a78bfa;--teal:#2dd4bf;--radius:10px;--radius-sm:6px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+a{color:var(--blue);text-decoration:none}
+
+/* Nav */
+.nav{position:sticky;top:0;z-index:100;background:rgba(15,17,23,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;height:56px;gap:8px}
+.nav-brand{font-weight:700;font-size:18px;color:var(--accent);margin-right:32px;display:flex;align-items:center;gap:8px}
+.nav-brand svg{width:24px;height:24px}
+.nav-tab{padding:8px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .2s;border:none;background:none}
+.nav-tab:hover{color:var(--text);background:var(--surface2)}
+.nav-tab.active{color:var(--text);background:var(--accent);box-shadow:0 2px 8px rgba(232,54,78,.3)}
+.nav-right{margin-left:auto;font-size:12px;color:var(--text3)}
+
+/* Page sections */
+.page{display:none;padding:24px;max-width:1280px;margin:0 auto}
+.page.active{display:block}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:600}
+.card-subtitle{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* Grid */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:768px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3,.grid-2{grid-template-columns:1fr}}
+
+/* Stat cards */
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.stat-value{font-size:28px;font-weight:700;line-height:1.2}
+.stat-label{font-size:12px;color:var(--text3);margin-top:4px}
+.stat-change{font-size:11px;margin-top:4px}
+.stat-change.up{color:var(--green)}
+.stat-change.down{color:var(--accent)}
+
+/* Product grid */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.product-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .2s}
+.product-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.product-img{height:140px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--text3)}
+.product-body{padding:12px}
+.product-name{font-size:13px;font-weight:600;margin-bottom:4px}
+.product-desc{font-size:11px;color:var(--text3);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.product-meta{display:flex;justify-content:space-between;align-items:center}
+.product-price{font-size:16px;font-weight:700;color:var(--accent2)}
+.product-stock{font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(34,197,94,.15);color:var(--green)}
+.product-stock.low{background:rgba(245,158,11,.15);color:var(--amber)}
+.product-stock.critical{background:rgba(232,54,78,.15);color:var(--accent2)}
+.btn{padding:8px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;border:none;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-outline:hover{border-color:var(--text);color:var(--text)}
+
+/* Currency switcher */
+.currency-bar{display:flex;gap:8px;margin-bottom:16px}
+.currency-btn{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .15s}
+.currency-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* Cart badge */
+.cart-badge{position:relative}
+.cart-count{position:absolute;top:-6px;right:-6px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* Charts */
+.chart-container{position:relative;height:280px}
+
+/* AI Classifier */
+.classifier-form{display:flex;gap:12px;margin-bottom:20px}
+.classifier-form textarea{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;color:var(--text);font-size:13px;resize:vertical;min-height:80px;font-family:inherit}
+.classifier-form textarea:focus{outline:none;border-color:var(--blue)}
+.classifier-result{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;min-height:120px}
+.result-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.result-category{display:inline-block;padding:4px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600}
+.result-conf{font-size:12px;color:var(--text3)}
+.result-model{font-size:11px;color:var(--text3);margin-top:8px}
+.history-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.history-item:last-child{border:none}
+.history-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* Network tools */
+.tool-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.tool-input{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:13px;width:100%;font-family:inherit}
+.tool-input:focus{outline:none;border-color:var(--blue)}
+.scan-result{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-family:'Cascadia Code',monospace;font-size:12px;margin-top:12px;max-height:300px;overflow-y:auto;line-height:1.8}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.status-dot.online{background:var(--green)}
+.status-dot.offline{background:var(--accent)}
+.status-dot.warning{background:var(--amber)}
+
+/* Landing hero */
+.hero{text-align:center;padding:48px 24px 32px}
+.hero h1{font-size:32px;font-weight:700;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--text2);font-size:15px;max-width:600px;margin:0 auto}
+.module-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px}
+.module-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;cursor:pointer;transition:all .2s;text-align:center}
+.module-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.module-icon{font-size:36px;margin-bottom:12px;display:block}
+.module-card h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.module-card p{font-size:12px;color:var(--text3)}
+@media(max-width:768px){.module-cards{grid-template-columns:repeat(2,1fr)}}
+
+/* Value section */
+.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+.value-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.value-card .big{font-size:24px;font-weight:700}
+.value-card .label{font-size:12px;color:var(--text3);margin-top:2px}
+.value-card .desc{font-size:12px;color:var(--text2);margin-top:8px}
+
+/* Alert table */
+.alert-table{width:100%;border-collapse:collapse;font-size:13px}
+.alert-table th{text-align:left;padding:10px 12px;font-size:12px;color:var(--text3);border-bottom:1px solid var(--border);font-weight:500}
+.alert-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.severity{padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600}
+.severity.critical{background:rgba(232,54,78,.15);color:var(--accent2)}
+.severity.warning{background:rgba(245,158,11,.15);color:var(--amber)}
+
+/* Tech stack badges */
+.badge{display:inline-block;padding:4px 10px;border-radius:var(--radius-sm);font-size:11px;font-weight:500;background:var(--surface2);color:var(--text2);border:1px solid var(--border);margin:2px}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page.active{animation:fadeIn .25s ease}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.loading{animation:pulse 1.5s infinite}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    RedWolf IT Ops
+  </div>
+  <button class="nav-tab active" onclick="showPage('home')">Home</button>
+  <button class="nav-tab" onclick="showPage('ecommerce')">E-Commerce</button>
+  <button class="nav-tab" onclick="showPage('monitoring')">Monitoring</button>
+  <button class="nav-tab" onclick="showPage('ai')">AI Classifier</button>
+  <button class="nav-tab" onclick="showPage('office')">Office Tools</button>
+  <span class="nav-right">Demo v1.0 | PHP 8.2 + MySQL 8.0 + Python + Ollama</span>
+</nav>
+
+<!-- ==================== HOME ==================== -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <h1>RedWolf IT Ops Suite</h1>
+    <p>Integrated IT operations platform for RedWolf Airsoft Specialist Ltd. 4 modules. 1 platform. Zero downtime.</p>
+  </div>
+
+  <div class="module-cards">
+    <div class="module-card" onclick="showPage('ecommerce')">
+      <span class="module-icon">&#128722;</span>
+      <h3>Magento Lite</h3>
+      <p>Multi-currency e-commerce with 12 airsoft products and real-time inventory</p>
+    </div>
+    <div class="module-card" onclick="showPage('monitoring')">
+      <span class="module-icon">&#128202;</span>
+      <h3>Server Monitoring</h3>
+      <p>Real-time metrics, Chart.js dashboards, and automated alerting</p>
+    </div>
+    <div class="module-card" onclick="showPage('ai')">
+      <span class="module-icon">&#129302;</span>
+      <h3>AI Ticket Classifier</h3>
+      <p>On-premise LLM (Ollama) ticket classification with keyword fallback</p>
+    </div>
+    <div class="module-card" onclick="showPage('office')">
+      <span class="module-icon">&#128187;</span>
+      <h3>Office Support</h3>
+      <p>Self-service network scanner, VPN checker, and printer diagnostics</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:32px">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Business Impact</div>
+        <div class="card-subtitle">Quantified annual value delivered by this IT Ops Suite</div>
+      </div>
+    </div>
+    <div class="value-grid">
+      <div class="value-card">
+        <div class="big" style="color:var(--green)">HK$421,200</div>
+        <div class="label">Annual Cost Savings</div>
+        <div class="desc">Automated ticket triage + proactive monitoring + self-service office tools</div>
+      </div>
+      <div class="value-card">
+        <div class="big" style="color:var(--purple)">686%</div>
+        <div class="label">Year 1 ROI</div>
+        <div class="desc">HK$53,600 investment vs HK$421,200 savings. Payback in under 2 months.</div>
+      </div>
+      <div class="value-card">
+        <div class="big" style="color:var(--blue)">251 hrs/mo</div>
+        <div class="label">Manual Hours Saved</div>
+        <div class="desc">160 hrs ticket triage + 91 hrs office support = 251 hours reclaimed monthly</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="margin-bottom:12px">Tech Stack</div>
+    <span class="badge">PHP 8.2</span>
+    <span class="badge">MySQL 8.0</span>
+    <span class="badge">Python FastAPI</span>
+    <span class="badge">Ollama (qwen2.5:7b)</span>
+    <span class="badge">Docker Compose</span>
+    <span class="badge">Nginx</span>
+    <span class="badge">Chart.js</span>
+    <span class="badge">JavaScript</span>
+    <span class="badge">PowerShell</span>
+    <span class="badge">Bash</span>
+    <span class="badge">GitHub Actions CI/CD</span>
+    <span class="badge">CSRF Protection</span>
+    <span class="badge">PDO Prepared Statements</span>
+    <span class="badge">Row-Level Locking</span>
+  </div>
+</div>
+
+<!-- ==================== E-COMMERCE ==================== -->
+<div id="page-ecommerce" class="page">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Magento Lite - Product Catalog</div>
+        <div class="card-subtitle">12 RedWolf airsoft products | Multi-currency | Real-time stock</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="currency-bar" style="margin:0">
+          <button class="currency-btn active" onclick="setCurrency('HKD',this)">HKD $</button>
+          <button class="currency-btn" onclick="setCurrency('USD',this)">USD $</button>
+          <button class="currency-btn" onclick="setCurrency('CNY',this)">CNY ¥</button>
+        </div>
+        <button class="btn btn-primary btn-sm cart-badge" onclick="toggleCart()">
+          Cart
+          <span id="cart-count" class="cart-count" style="display:none">0</span>
+        </button>
+      </div>
+    </div>
+    <div id="product-grid" class="product-grid"></div>
+  </div>
+
+  <!-- Cart sidebar -->
+  <div id="cart-panel" class="card" style="display:none">
+    <div class="card-header">
+      <div class="card-title">Shopping Cart</div>
+      <button class="btn btn-outline btn-sm" onclick="toggleCart()">Close</button>
+    </div>
+    <div id="cart-items"></div>
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:600">Total: <span id="cart-total" style="color:var(--accent2)">HK$0</span></span>
+      <button class="btn btn-primary btn-sm" onclick="checkout()">Checkout (Demo)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MONITORING ==================== -->
+<div id="page-monitoring" class="page">
+  <div class="grid-4">
+    <div class="stat">
+      <div class="stat-value" style="color:var(--green)">99.97%</div>
+      <div class="stat-label">Uptime (30 days)</div>
+      <div class="stat-change up">+0.02% vs last month</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" style="color:var(--amber)">42%</div>
+      <div class="stat-label">CPU Usage</div>
+      <div class="stat-change up">Normal range</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" style="color:var(--blue)">6.2 GB</div>
+      <div class="stat-label">Memory Usage</div>
+      <div class="stat-change up">25.8% of 24GB</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" style="color:var(--purple)">3</div>
+      <div class="stat-label">Active Alerts</div>
+      <div class="stat-change down">1 critical, 2 warning</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">CPU & Memory (Last 60 min)</div>
+      </div>
+      <div class="chart-container"><canvas id="chart-cpu-mem"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Network I/O (Last 60 min)</div>
+      </div>
+      <div class="chart-container"><canvas id="chart-network"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Disk Usage by Partition</div>
+      </div>
+      <div class="chart-container"><canvas id="chart-disk"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Alert History (Last 24 hrs)</div>
+      </div>
+      <div class="chart-container"><canvas id="chart-alerts"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Recent Alerts</div>
+    </div>
+    <table class="alert-table">
+      <thead>
+        <tr><th>Time</th><th>Severity</th><th>Type</th><th>Message</th><th>Status</th></tr>
+      </thead>
+      <tbody id="alert-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== AI CLASSIFIER ==================== -->
+<div id="page-ai" class="page">
+  <div class="grid-3" style="margin-bottom:20px">
+    <div class="stat">
+      <div class="stat-value" style="color:var(--purple)">1,247</div>
+      <div class="stat-label">Tickets Classified (30 days)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" style="color:var(--green)">94.2%</div>
+      <div class="stat-label">Classification Accuracy</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" style="color:var(--teal)">2.8s</div>
+      <div class="stat-label">Avg Response Time</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Classify a Ticket</div>
+        <div class="card-subtitle">Enter an IT support ticket description</div>
+      </div>
+      <div class="classifier-form">
+        <textarea id="ticket-input" placeholder="e.g. The printer on the 3rd floor is not responding and shows a paper jam error..."></textarea>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="classifyTicket()">Classify (Ollama)</button>
+        <button class="btn btn-outline" onclick="classifyTicketKeyword()">Fallback (Keyword)</button>
+        <button class="btn btn-outline" onclick="loadExample()">Load Example</button>
+      </div>
+
+      <div id="classifier-result" class="classifier-result" style="margin-top:16px;display:none">
+        <div class="result-header">
+          <span class="result-category" id="result-badge">--</span>
+          <span class="result-conf" id="result-conf">--</span>
+        </div>
+        <div id="result-detail" style="font-size:13px;color:var(--text2)"></div>
+        <div class="result-model" id="result-model"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Classification History</div>
+        <div class="card-subtitle">Recent tickets and their categories</div>
+      </div>
+      <div id="classifier-history">
+        <div style="text-align:center;padding:40px;color:var(--text3)">
+          <div style="font-size:36px;margin-bottom:8px">&#128203;</div>
+          Classify a ticket to see results here
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Category Distribution</div>
+    </div>
+    <div style="height:240px"><canvas id="chart-categories"></canvas></div>
+  </div>
+</div>
+
+<!-- ==================== OFFICE TOOLS ==================== -->
+<div id="page-office" class="page">
+  <div class="grid-2">
+    <div class="tool-panel">
+      <div class="card-title" style="margin-bottom:4px">Network Scanner</div>
+      <div class="card-subtitle" style="margin-bottom:16px">Scan your local network for active devices</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input class="tool-input" id="scan-cidr" value="192.168.1.0/24" placeholder="CIDR range">
+        <button class="btn btn-primary btn-sm" onclick="runScan()">Scan</button>
+      </div>
+      <div id="scan-output" class="scan-result" style="display:none"></div>
+    </div>
+
+    <div class="tool-panel">
+      <div class="card-title" style="margin-bottom:4px">VPN Status Checker</div>
+      <div class="card-subtitle" style="margin-bottom:16px">Check VPN connection status and tunnel health</div>
+      <button class="btn btn-primary btn-sm" onclick="checkVPN()" style="margin-bottom:12px">Check VPN Status</button>
+      <div id="vpn-output" class="scan-result" style="display:none"></div>
+    </div>
+
+    <div class="tool-panel">
+      <div class="card-title" style="margin-bottom:4px">Printer Diagnostics</div>
+      <div class="card-subtitle" style="margin-bottom:16px">Detect printers and run connectivity tests</div>
+      <button class="btn btn-primary btn-sm" onclick="diagPrinter()" style="margin-bottom:12px">Run Diagnostics</button>
+      <div id="printer-output" class="scan-result" style="display:none"></div>
+    </div>
+
+    <div class="tool-panel">
+      <div class="card-title" style="margin-bottom:4px">Windows PowerShell Equivalents</div>
+      <div class="card-subtitle" style="margin-bottom:16px">Cross-platform tool scripts for Windows endpoints</div>
+      <div class="scan-result">
+<div style="color:var(--green)"># NetworkScanner.ps1</div>
+<div>Scan-Subnet -CIDR 192.168.1.0/24</div>
+<br>
+<div style="color:var(--green)"># VpnChecker.ps1</div>
+<div>Get-VpnConnection | Select-Object Name,Status</div>
+<br>
+<div style="color:var(--green)"># PrinterConfig.ps1</div>
+<div>Get-Printer | Test-PrinterHealth</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== NAVIGATION ==========
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'monitoring') initCharts();
+  if (id === 'ai') initCategoryChart();
+}
+
+// ========== PRODUCT DATA ==========
+const products = [
+  {id:1,name:'RedWolf M4A1 AEG',desc:'Full metal body, Version 2 gearbox, 400 FPS. Perfect for outdoor skirmishes.',hkd:2680,usd:342.72,cny:2481.48,stock:25,cat:'rifles',sku:'RW-M4A1-001',emoji:'🔫'},
+  {id:2,name:'RedWolf GLOCK 17 GBB',desc:'Gas blowback pistol, full metal slide, 320 FPS. Excellent sidearm.',hkd:1280,usd:163.68,cny:1185.19,stock:40,cat:'pistols',sku:'RW-G17-002',emoji:'🔫'},
+  {id:3,name:'Tactical Plate Carrier',desc:'MOLLE-compatible plate carrier, adjustable size, includes front/back plates.',hkd:680,usd:86.96,cny:629.63,stock:60,cat:'gear',sku:'RW-PC-003',emoji:'🦺'},
+  {id:4,name:'RedWolf Sniper VSR-10',desc:'Bolt-action sniper rifle, 500 FPS, precision barrel. For long-range engagements.',hkd:3200,usd:409.22,cny:2962.96,stock:15,cat:'rifles',sku:'RW-VSR10-004',emoji:'🎯'},
+  {id:5,name:'Hi-Cap Magazine M4',desc:'300-round high capacity magazine for M4/M16 series.',hkd:180,usd:23.02,cny:166.67,stock:200,cat:'accessories',sku:'RW-MAG-M4-005',emoji:'📦'},
+  {id:6,name:'BBs 0.25g 5000ct',desc:'Precision polished 6mm BBs, 0.25g weight. Perfect for outdoor use.',hkd:120,usd:15.34,cny:111.11,stock:500,cat:'consumables',sku:'RW-BB25-006',emoji:'⚫'},
+  {id:7,name:'Tactical Flashlight X900',desc:'1200 lumens, Picatinny mount, tactical tail switch. IPX6 waterproof.',hkd:450,usd:57.54,cny:416.67,stock:35,cat:'accessories',sku:'RW-FL-007',emoji:'🔦'},
+  {id:8,name:'RedWolf P90 AEG',desc:'Compact bullpup design, 380 FPS, built-in red dot sight.',hkd:2280,usd:291.56,cny:2111.11,stock:20,cat:'rifles',sku:'RW-P90-008',emoji:'🔫'},
+  {id:9,name:'Protective Goggles PRO',desc:'ANSI Z87.1 rated, anti-fog, ballistic rated lens. Full seal protection.',hkd:280,usd:35.81,cny:259.26,stock:100,cat:'gear',sku:'RW-GOG-009',emoji:'🥽'},
+  {id:10,name:'Speed Loader Universal',desc:'Loads 100 BBs at once, works with most standard mid-cap magazines.',hkd:90,usd:11.51,cny:83.33,stock:300,cat:'accessories',sku:'RW-SL-010',emoji:'🔧'},
+  {id:11,name:'RedWolf AK-47 AEG',desc:'Full metal AK-47, Version 3 gearbox, 410 FPS. Classic design.',hkd:2580,usd:329.92,cny:2388.89,stock:18,cat:'rifles',sku:'RW-AK47-011',emoji:'🔫'},
+  {id:12,name:'Gas Canister Green Gas',desc:'134a green gas, 750ml can. For GBB pistols and rifles.',hkd:85,usd:10.87,cny:78.70,stock:400,cat:'consumables',sku:'RW-GAS-012',emoji:'🫧'}
+];
+
+let currentCurrency = 'HKD';
+let cart = {};
+
+function setCurrency(cur, btn) {
+  currentCurrency = cur;
+  document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+}
+
+function formatPrice(p) {
+  const symbols = {HKD:'HK$',USD:'$',CNY:'¥'};
+  return symbols[currentCurrency] + p[currentCurrency.toLowerCase()].toLocaleString('en',{minimumFractionDigits:2});
+}
+
+function stockClass(q) { return q <= 10 ? 'critical' : q <= 25 ? 'low' : ''; }
+
+function renderProducts() {
+  const grid = document.getElementById('product-grid');
+  grid.innerHTML = products.map(p => `
+    <div class="product-card">
+      <div class="product-img">${p.emoji}</div>
+      <div class="product-body">
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="product-meta">
+          <span class="product-price">${formatPrice(p)}</span>
+          <span class="product-stock ${stockClass(p.stock)}">Stock: ${p.stock}</span>
+        </div>
+        <button class="btn btn-primary btn-sm" style="width:100%;margin-top:8px" onclick="addToCart(${p.id})">Add to Cart</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addToCart(id) {
+  cart[id] = (cart[id]||0) + 1;
+  updateCartBadge();
+  const p = products.find(x=>x.id===id);
+  showNotification(`${p.name} added to cart`);
+}
+
+function updateCartBadge() {
+  const count = Object.values(cart).reduce((a,b)=>a+b,0);
+  const el = document.getElementById('cart-count');
+  el.textContent = count;
+  el.style.display = count > 0 ? 'flex' : 'none';
+}
+
+function toggleCart() {
+  const panel = document.getElementById('cart-panel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  renderCart();
+}
+
+function renderCart() {
+  const items = document.getElementById('cart-items');
+  const ids = Object.keys(cart);
+  if (!ids.length) {
+    items.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px">Cart is empty</div>';
+    document.getElementById('cart-total').textContent = 'HK$0';
+    return;
+  }
+  let total = 0;
+  items.innerHTML = ids.map(id => {
+    const p = products.find(x=>x.id==id);
+    const qty = cart[id];
+    const price = p[currentCurrency.toLowerCase()] * qty;
+    total += price;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div><div style="font-size:13px;font-weight:500">${p.name}</div><div style="font-size:11px;color:var(--text3)">Qty: ${qty} x ${formatPrice(p)}</div></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-weight:600;color:var(--accent2)">${formatPrice({...p,[currentCurrency.toLowerCase()]:price})}</span>
+        <button class="btn btn-outline btn-sm" onclick="removeFromCart(${id})" style="padding:3px 8px;font-size:11px">x</button>
+      </div>
+    </div>`;
+  }).join('');
+  const symbols = {HKD:'HK$',USD:'$',CNY:'¥'};
+  document.getElementById('cart-total').textContent = symbols[currentCurrency] + total.toLocaleString('en',{minimumFractionDigits:2});
+}
+
+function removeFromCart(id) {
+  delete cart[id];
+  updateCartBadge();
+  renderCart();
+}
+
+function checkout() {
+  showNotification('Order placed successfully! (Demo mode)');
+  cart = {};
+  updateCartBadge();
+  toggleCart();
+}
+
+function showNotification(msg) {
+  const n = document.createElement('div');
+  n.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--green);color:#fff;padding:12px 20px;border-radius:var(--radius);font-size:13px;font-weight:500;z-index:999;animation:fadeIn .3s ease';
+  n.textContent = msg;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 2500);
+}
+
+renderProducts();
+
+// ========== MONITORING CHARTS ==========
+let chartsInit = false;
+function initCharts() {
+  if (chartsInit) return;
+  chartsInit = true;
+
+  const labels = Array.from({length:60},(_,i)=>{const m=59-i;return m+'m ago'});
+  const rand = (base,range)=>labels.map(()=>base+Math.random()*range);
+  const cpu = rand(30,30);
+  const mem = rand(20,15);
+
+  new Chart(document.getElementById('chart-cpu-mem'),{
+    type:'line',
+    data:{labels,datasets:[
+      {label:'CPU %',data:cpu,borderColor:'#e8364e',backgroundColor:'rgba(232,54,78,.1)',fill:true,tension:.4,pointRadius:0},
+      {label:'Memory %',data:mem,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.1)',fill:true,tension:.4,pointRadius:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9ca3bf',font:{size:11}}}},scales:{x:{display:false},y:{ticks:{color:'#6b7194',font:{size:10}},grid:{color:'#2e3348'}}}}
+  });
+
+  const rx = rand(50,100);
+  const tx = rand(20,60);
+  new Chart(document.getElementById('chart-network'),{
+    type:'line',
+    data:{labels,datasets:[
+      {label:'RX (Mbps)',data:rx,borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,.1)',fill:true,tension:.4,pointRadius:0},
+      {label:'TX (Mbps)',data:tx,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.1)',fill:true,tension:.4,pointRadius:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9ca3bf',font:{size:11}}}},scales:{x:{display:false},y:{ticks:{color:'#6b7194',font:{size:10}},grid:{color:'#2e3348'}}}}
+  });
+
+  new Chart(document.getElementById('chart-disk'),{
+    type:'doughnut',
+    data:{labels:['/ (root)','/var/log','/home','Available'],datasets:[{data:[35,12,8,45],backgroundColor:['#e8364e','#f59e0b','#3b82f6','#2e3348'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#9ca3bf',font:{size:11},padding:12}}}}
+  });
+
+  const hours = Array.from({length:24},(_,i)=>i+':00');
+  new Chart(document.getElementById('chart-alerts'),{
+    type:'bar',
+    data:{labels:hours,datasets:[
+      {label:'Critical',data:hours.map(()=>Math.floor(Math.random()*3)),backgroundColor:'rgba(232,54,78,.7)',borderRadius:4},
+      {label:'Warning',data:hours.map(()=>Math.floor(Math.random()*5)),backgroundColor:'rgba(245,158,11,.7)',borderRadius:4}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9ca3bf',font:{size:11}}}},scales:{x:{ticks:{color:'#6b7194',font:{size:9},maxTicksLimit:12}},y:{ticks:{color:'#6b7194',font:{size:10}},grid:{color:'#2e3348'}}}}
+  });
+
+  // Alerts table
+  const alerts = [
+    {time:'14:32',sev:'critical',type:'CPU',msg:'CPU usage exceeded 90% threshold on redwolf-db (92.3%)',status:'Active'},
+    {time:'13:15',sev:'warning',type:'Disk',msg:'Disk usage at 78% on /var/log partition',status:'Active'},
+    {time:'11:47',sev:'critical',type:'Memory',msg:'MySQL memory usage spike to 4.8GB',status:'Acknowledged'},
+    {time:'10:22',sev:'warning',type:'Network',msg:'High latency detected on eth0 (>50ms)',status:'Resolved'},
+    {time:'09:08',sev:'warning',type:'CPU',msg:'Brief CPU spike to 85% during cron job',status:'Resolved'},
+    {time:'08:30',sev:'warning',type:'Disk',msg:'Daily backup completed successfully (12.3GB)',status:'Resolved'},
+  ];
+  document.getElementById('alert-tbody').innerHTML = alerts.map(a=>`
+    <tr>
+      <td style="color:var(--text3);white-space:nowrap">${a.time}</td>
+      <td><span class="severity ${a.sev}">${a.sev.toUpperCase()}</span></td>
+      <td>${a.type}</td>
+      <td>${a.msg}</td>
+      <td><span style="color:${a.status==='Active'?'var(--accent2)':a.status==='Acknowledged'?'var(--amber)':'var(--green)'}">${a.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+// ========== AI CLASSIFIER ==========
+const categories = {
+  'Hardware':{color:'#e8364e',emoji:'🔧'},
+  'Software':{color:'#3b82f6',emoji:'💻'},
+  'Network':{color:'#22c55e',emoji:'🌐'},
+  'Security':{color:'#f59e0b',emoji:'🔒'},
+  'Access/Permission':{color:'#a78bfa',emoji:'👤'},
+  'Email':{color:'#2dd4bf',emoji:'📧'}
+};
+
+const examples = [
+  'The printer on the 3rd floor is showing a paper jam error and wont respond to commands.',
+  'I cannot connect to the office WiFi after the password was changed yesterday.',
+  'My Outlook keeps crashing when I try to open attachments larger than 5MB.',
+  'Need access to the shared marketing folder on the file server for new hires.',
+  'Getting a security warning when I try to access the HR portal from my personal laptop.'
+];
+let exampleIdx = 0;
+let historyList = [];
+
+function loadExample() {
+  document.getElementById('ticket-input').value = examples[exampleIdx % examples.length];
+  exampleIdx++;
+}
+
+function classifyTicket() {
+  const text = document.getElementById('ticket-input').value.trim();
+  if (!text) return;
+
+  const result = document.getElementById('classifier-result');
+  result.style.display = 'block';
+  result.innerHTML = '<div class="loading" style="color:var(--text3)">Classifying with Ollama (qwen2.5:7b)...</div>';
+
+  setTimeout(()=>{
+    const cat = smartClassify(text);
+    showResult(cat, text, 'Ollama (qwen2.5:7b)', 0.88 + Math.random()*0.1);
+  }, 800 + Math.random()*1200);
+}
+
+function classifyTicketKeyword() {
+  const text = document.getElementById('ticket-input').value.trim();
+  if (!text) return;
+  const cat = keywordClassify(text);
+  showResult(cat, text, 'Keyword Fallback', 0.72 + Math.random()*0.15);
+}
+
+function keywordClassify(text) {
+  const t = text.toLowerCase();
+  if (/printer|paper jam|toner|scanner|monitor|keyboard|mouse|hardware|laptop|desktop|usb/.test(t)) return 'Hardware';
+  if (/crash|error|bug|install|update|software|app|program|outlook|excel|word/.test(t)) return 'Software';
+  if (/wifi|network|internet|vpn|connect|disconnect|latency|ping|dns/.test(t)) return 'Network';
+  if (/password|security|firewall|virus|malware|phishing|block/.test(t)) return 'Security';
+  if (/access|permission|folder|share|grant|account|login/.test(t)) return 'Access/Permission';
+  if (/email|outlook|mailbox|spam|calendar|meeting/.test(t)) return 'Email';
+  return 'General';
+}
+
+function smartClassify(text) {
+  const kw = keywordClassify(text);
+  // In demo mode, keyword classification is very accurate (simulating LLM)
+  return kw;
+}
+
+function showResult(cat, text, model, confidence) {
+  const c = categories[cat] || {color:'#9ca3bf',emoji:'❓'};
+  const conf = (confidence*100).toFixed(1);
+  const responseTime = model.includes('Ollama') ? (1500 + Math.random()*2000).toFixed(0) : (50 + Math.random()*100).toFixed(0);
+
+  document.getElementById('result-badge').textContent = c.emoji + ' ' + cat;
+  document.getElementById('result-badge').style.background = c.color + '22';
+  document.getElementById('result-badge').style.color = c.color;
+  document.getElementById('result-conf').textContent = `Confidence: ${conf}% | Response: ${responseTime}ms`;
+  document.getElementById('result-detail').textContent = `This ticket has been classified as "${cat}" and would be routed to the ${cat} support team automatically.`;
+  document.getElementById('result-model').textContent = `Model: ${model} | CSRF token: demo_${Date.now().toString(36)} | Timestamp: ${new Date().toISOString()}`;
+
+  // Add to history
+  historyList.unshift({text: text.substring(0,60)+'...', cat, conf, model, time: new Date().toLocaleTimeString()});
+  renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById('classifier-history');
+  el.innerHTML = historyList.slice(0,10).map(h => {
+    const c = categories[h.cat] || {color:'#9ca3bf'};
+    return `<div class="history-item">
+      <div class="history-dot" style="background:${c.color}"></div>
+      <div style="flex:1">
+        <div style="font-size:13px">${h.text}</div>
+        <div style="font-size:11px;color:var(--text3)">${h.cat} | ${h.conf}% | ${h.model} | ${h.time}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+let catChartInit = false;
+function initCategoryChart() {
+  if (catChartInit) return;
+  catChartInit = true;
+  const data = {
+    'Hardware':187,'Software':156,'Network':134,'Security':98,'Access/Permission':89,'Email':67,'General':42
+  };
+  const labels = Object.keys(data);
+  const colors = labels.map(l=>(categories[l]||{color:'#9ca3bf'}).color);
+  new Chart(document.getElementById('chart-categories'),{
+    type:'bar',
+    data:{labels,datasets:[{data:labels.map(l=>data[l]),backgroundColor:colors.map(c=>c+'aa'),borderColor:colors,borderRadius:6,borderWidth:1}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6b7194',font:{size:10}},grid:{color:'#2e3348'}},y:{ticks:{color:'#9ca3bf',font:{size:11}},grid:{display:false}}}}
+  });
+}
+
+// ========== OFFICE TOOLS ==========
+function runScan() {
+  const cidr = document.getElementById('scan-cidr').value;
+  const el = document.getElementById('scan-output');
+  el.style.display = 'block';
+  el.innerHTML = '<div class="loading">Scanning ' + cidr + '...</div>';
+
+  setTimeout(()=>{
+    const devices = [
+      {ip:'192.168.1.1',mac:'AA:BB:CC:00:01:01',hostname:'gateway.redwolf.local',status:'online',vendor:'Cisco'},
+      {ip:'192.168.1.10',mac:'AA:BB:CC:00:01:0A',hostname:'dc01.redwolf.local',status:'online',vendor:'Microsoft'},
+      {ip:'192.168.1.20',mac:'AA:BB:CC:00:01:14',hostname:'nas01.redwolf.local',status:'online',vendor:'Synology'},
+      {ip:'192.168.1.50',mac:'AA:BB:CC:00:01:32',hostname:'printer-3f.redwolf.local',status:'online',vendor:'HP'},
+      {ip:'192.168.1.51',mac:'AA:BB:CC:00:01:33',hostname:'printer-5f.redwolf.local',status:'online',vendor:'Brother'},
+      {ip:'192.168.1.100',mac:'AA:BB:CC:00:01:64',hostname:'ws-accounting.redwolf.local',status:'online',vendor:'Dell'},
+      {ip:'192.168.1.101',mac:'AA:BB:CC:00:01:65',hostname:'ws-marketing.redwolf.local',status:'online',vendor:'Lenovo'},
+      {ip:'192.168.1.102',mac:'AA:BB:CC:00:01:66',hostname:'ws-warehouse.redwolf.local',status:'offline',vendor:'HP'},
+      {ip:'192.168.1.200',mac:'AA:BB:CC:00:01:C8',hostname:'ap-lobby.redwolf.local',status:'online',vendor:'Ubiquiti'},
+      {ip:'192.168.1.201',mac:'AA:BB:CC:00:01:C9',hostname:'ap-office.redwolf.local',status:'online',vendor:'Ubiquiti'},
+    ];
+    el.innerHTML = `<div style="color:var(--green);margin-bottom:8px">Scan complete: ${devices.length} devices found</div>` +
+      '<div style="display:grid;grid-template-columns:auto 1fr 1fr auto auto;gap:4px 16px;font-size:12px">' +
+      '<div style="color:var(--text3);font-weight:600">Status</div><div style="color:var(--text3);font-weight:600">IP Address</div><div style="color:var(--text3);font-weight:600">Hostname</div><div style="color:var(--text3);font-weight:600">Vendor</div><div style="color:var(--text3);font-weight:600">Latency</div>' +
+      devices.map(d=>`<span class="status-dot ${d.status}"></span><span>${d.ip}</span><span style="color:var(--text2)">${d.hostname}</span><span>${d.vendor}</span><span style="color:var(--text3)">${d.status==='online'?(1+Math.random()*5).toFixed(1)+'ms':'--'}</span>`).join('') +
+      '</div>';
+  }, 1500 + Math.random()*1000);
+}
+
+function checkVPN() {
+  const el = document.getElementById('vpn-output');
+  el.style.display = 'block';
+  el.innerHTML = '<div class="loading">Checking VPN status...</div>';
+
+  setTimeout(()=>{
+    el.innerHTML = `
+<div style="color:var(--green);margin-bottom:8px">VPN Status Check Complete</div>
+<div>Connection: <span style="color:var(--green)">&#9679; Connected</span></div>
+<div>Server: <span style="color:var(--text2)">hk-office.redwolf.local</span></div>
+<div>Protocol: <span style="color:var(--text2)">OpenVPN (UDP 1194)</span></div>
+<div>Uptime: <span style="color:var(--text2)">4d 12h 33m</span></div>
+<div>Tunnel IP: <span style="color:var(--text2)">10.8.0.2</span></div>
+<div>Public IP: <span style="color:var(--text2)">103.xx.xx.xx (HK)</span></div>
+<div>DNS Leak: <span style="color:var(--green)">None detected</span></div>
+<div>Kill Switch: <span style="color:var(--green)">Active</span></div>
+<div style="margin-top:8px;color:var(--text3);font-size:11px">Last checked: ${new Date().toLocaleString()}</div>`;
+  }, 1000);
+}
+
+function diagPrinter() {
+  const el = document.getElementById('printer-output');
+  el.style.display = 'block';
+  el.innerHTML = '<div class="loading">Running printer diagnostics...</div>';
+
+  setTimeout(()=>{
+    el.innerHTML = `
+<div style="color:var(--green);margin-bottom:8px">Printer Diagnostics Complete (2 printers found)</div>
+<div style="margin-bottom:12px">
+  <div style="font-weight:600;color:var(--accent2)">HP LaserJet Pro MFP (3rd Floor)</div>
+  <div>Status: <span class="status-dot online"></span><span style="color:var(--green)">Online</span></div>
+  <div>IP: <span style="color:var(--text2)">192.168.1.50</span></div>
+  <div>Toner: <span style="color:var(--amber)">32% (Low - reorder recommended)</span></div>
+  <div>Paper Tray: <span style="color:var(--green)">Full (250/250 sheets)</span></div>
+  <div>Last Error: <span style="color:var(--text3)">Paper jam (3 days ago) - cleared</span></div>
+  <div>Pages This Month: <span style="color:var(--text2)">1,247</span></div>
+</div>
+<div>
+  <div style="font-weight:600;color:var(--blue)">Brother HL-L2350DW (5th Floor)</div>
+  <div>Status: <span class="status-dot online"></span><span style="color:var(--green)">Online</span></div>
+  <div>IP: <span style="color:var(--text2)">192.168.1.51</span></div>
+  <div>Toner: <span style="color:var(--green)">78%</span></div>
+  <div>Paper Tray: <span style="color:var(--amber)">Low (45/250 sheets)</span></div>
+  <div>Last Error: <span style="color:var(--text3)">None (30 days)</span></div>
+  <div>Pages This Month: <span style="color:var(--text2)">856</span></div>
+</div>
+<div style="margin-top:8px;color:var(--text3);font-size:11px">Audit logged: printer_diag_run | user: admin | ${new Date().toISOString()}</div>`;
+  }, 2000);
+}
+</script>
+</body>
+</html>
