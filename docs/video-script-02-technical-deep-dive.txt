@@ -1,0 +1,58 @@
+# Video Script 02: Technical Deep Dive (5 Minutes)
+
+## Scene Breakdown
+
+### [0:00-0:15] Introduction
+**[Visual: Terminal showing `bash deploy-all.sh` running]**
+"Let me break down the technical architecture of the RedWolf IT Ops Suite."
+
+### [0:15-1:00] Docker Architecture
+**[Camera: docker-compose.yml on screen]**
+"We use Docker Compose with five services: Nginx as reverse proxy, PHP 8.2 FPM for application code, MySQL 8.0 for data, phpMyAdmin for database management, and Ollama for AI inference."
+
+**[Visual: Show docker-compose.yml, highlight each service]**
+
+"Each service communicates over a dedicated Docker bridge network. MySQL uses a persistent volume for data, and Ollama has its own volume for model storage."
+
+### [1:00-2:00] Database Design
+**[Camera: sql/schema.sql on screen]**
+"The database has five tables. The products table uses InnoDB with specific indexes: a primary key on id, an index on created_at for sorting, and a unique index on sku."
+
+**[Visual: Show CREATE TABLE statements]**
+
+"The key design decision is the row-level locking in updateStock(). We use SELECT ... FOR UPDATE inside an explicit transaction. Let me show the code."
+
+**[Camera: ProductModel.php updateStock method]**
+"This ensures that even with concurrent requests, stock never goes negative."
+
+### [2:00-3:00] Security Architecture
+**[Camera: CsrfManager.php on screen]**
+"CSRF protection uses a per-session token stored in PHP's session. Every form includes a hidden field with this token. API endpoints validate the token before processing."
+
+**[Camera: Database.php on screen]**
+"All database queries use PDO prepared statements. User input is never concatenated into SQL strings."
+
+**[Camera: NetworkUtils.php validateIp]**
+"Network tools validate input with filter_var() and restrict scanning to private IP ranges only."
+
+### [3:00-4:00] AI Architecture
+**[Camera: Architecture diagram - text description on screen]**
+"The AI pipeline: browser sends ticket text to api_endpoint.php, which calls the Python FastAPI service running on port 8001. FastAPI sends the prompt to Ollama's local API."
+
+**[Camera: prompt_template.txt on screen]**
+"The prompt template instructs the model to return strict JSON with category, confidence, reasoning, and priority."
+
+**[Camera: keyword_classifier.py on screen]**
+"If Ollama is unavailable, the keyword classifier takes over instantly. It uses pattern matching across 9 IT support categories."
+
+### [4:00-5:00] Deployment & Testing
+**[Camera: deploy-all.sh on screen]**
+"The deployment script runs 6 steps: environment check, core services, four module deployments, and test execution."
+
+**[Camera: tests/ directory structure]**
+"We have four test levels: unit tests (PHP lint, shellcheck, security scan), integration tests (API endpoints), E2E tests (browser), and performance benchmarks."
+
+**[Camera: GitHub Actions CI badge]**
+"CI/CD runs on every push via GitHub Actions, testing across all levels."
+
+**[Visual: End card with tech stack badges]**

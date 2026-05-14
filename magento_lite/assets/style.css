@@ -1,0 +1,385 @@
+/**
+ * style.css - RedWolf Magento Lite Stylesheet
+ *
+ * Professional styling for the product catalog page including
+ * responsive grid, card effects, animations, and dark header branding.
+ * Designed to complement Bootstrap 5 without overriding core utilities.
+ *
+ * @package RedWolf\MagentoLite\Assets
+ * @version 1.0.0
+ */
+
+/* ============================================================
+   CSS Custom Properties
+   ============================================================ */
+:root {
+    --rw-primary: #c8102e;
+    --rw-primary-dark: #9b0d23;
+    --rw-dark: #1a1a2e;
+    --rw-dark-light: #16213e;
+    --rw-accent: #e94560;
+    --rw-success: #28a745;
+    --rw-warning: #ffc107;
+    --rw-danger: #dc3545;
+    --rw-text-light: #f8f9fa;
+    --rw-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --rw-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+    --rw-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.18);
+    --rw-transition: 0.25s ease;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+.rw-header {
+    background: linear-gradient(135deg, var(--rw-dark) 0%, var(--rw-dark-light) 100%);
+    border-bottom: 3px solid var(--rw-primary);
+    position: sticky;
+    top: 0;
+    z-index: 1040;
+}
+
+.rw-header .navbar-brand {
+    font-size: 1.25rem;
+    letter-spacing: 0.5px;
+    color: var(--rw-text-light);
+}
+
+.rw-header .navbar-brand i {
+    color: var(--rw-primary);
+    font-size: 1.4rem;
+}
+
+.rw-header .btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.3);
+    font-size: 0.875rem;
+}
+
+.rw-header .btn-outline-light:hover {
+    background-color: var(--rw-primary);
+    border-color: var(--rw-primary);
+}
+
+/* ============================================================
+   Currency Switcher
+   ============================================================ */
+.dropdown-menu {
+    min-width: 8rem;
+}
+
+.currency-option {
+    cursor: pointer;
+    transition: background-color var(--rw-transition);
+}
+
+.currency-option.active {
+    background-color: var(--rw-primary);
+    color: #fff;
+}
+
+.currency-option:hover.active {
+    background-color: var(--rw-primary-dark);
+}
+
+/* ============================================================
+   Product Grid & Cards
+   ============================================================ */
+#productGrid {
+    min-height: 200px;
+}
+
+.product-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: transform var(--rw-transition), box-shadow var(--rw-transition);
+    background: #fff;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--rw-shadow-lg);
+}
+
+.product-card .card-body {
+    padding: 1rem 1.25rem;
+}
+
+.product-card .card-footer {
+    padding-top: 0;
+}
+
+/* ============================================================
+   Product Image
+   ============================================================ */
+.product-image-wrapper {
+    background-color: #f8f9fa;
+    aspect-ratio: 3 / 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-bottom: 1px solid #eee;
+}
+
+.product-image-placeholder {
+    width: 100%;
+    height: 100%;
+}
+
+/* ============================================================
+   Price Display
+   ============================================================ */
+.price-group {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.2rem 0;
+    font-size: 0.875rem;
+    transition: opacity var(--rw-transition), transform var(--rw-transition);
+}
+
+.price-row[data-currency]:not(.price-active) {
+    opacity: 0.4;
+    font-size: 0.8rem;
+    transform: scale(0.98);
+}
+
+.price-row.price-active {
+    opacity: 1;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.price-row.price-active .price-value {
+    color: var(--rw-primary);
+}
+
+.price-label {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.price-row.price-active .price-label {
+    color: #343a40;
+}
+
+/* ============================================================
+   Add to Cart Button
+   ============================================================ */
+.add-to-cart-btn {
+    border-radius: 0.5rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    transition: all var(--rw-transition);
+    border: none;
+    background-color: var(--rw-primary);
+}
+
+.add-to-cart-btn:hover:not(:disabled) {
+    background-color: var(--rw-primary-dark);
+    transform: scale(1.02);
+}
+
+.add-to-cart-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.add-to-cart-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   Cart Badge Animation
+   ============================================================ */
+#cartBadge {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 0.65rem;
+}
+
+#cartBadge.bounce {
+    animation: badgeBounce 0.5s ease;
+}
+
+@keyframes badgeBounce {
+    0%   { transform: translate(-50%, -50%) scale(1); }
+    30%  { transform: translate(-50%, -50%) scale(1.6); }
+    60%  { transform: translate(-50%, -50%) scale(0.9); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ============================================================
+   Cart Sidebar
+   ============================================================ */
+#cartSidebar {
+    max-width: 400px;
+}
+
+.cart-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.cart-item-price {
+    color: var(--rw-primary);
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.cart-qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.cart-qty-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all var(--rw-transition);
+}
+
+.cart-qty-btn:hover {
+    background: var(--rw-primary);
+    color: #fff;
+    border-color: var(--rw-primary);
+}
+
+.cart-qty-value {
+    width: 32px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.cart-item-remove {
+    color: #dc3545;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    font-size: 1.1rem;
+    transition: transform var(--rw-transition);
+}
+
+.cart-item-remove:hover {
+    transform: scale(1.2);
+}
+
+/* ============================================================
+   Toast Notifications
+   ============================================================ */
+.toast-container .toast {
+    min-width: 280px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.toast.toast-success {
+    border-left: 4px solid var(--rw-success);
+}
+
+.toast.toast-error {
+    border-left: 4px solid var(--rw-danger);
+}
+
+.toast.toast-warning {
+    border-left: 4px solid var(--rw-warning);
+}
+
+.toast.showing {
+    animation: toastSlideIn 0.35s ease forwards;
+}
+
+.toast.hiding {
+    animation: toastSlideOut 0.3s ease forwards;
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toastSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+footer {
+    background: var(--rw-dark);
+    color: var(--rw-text-light);
+    padding: 2rem 0;
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+/* ============================================================
+   Responsive Adjustments
+   ============================================================ */
+@media (max-width: 767.98px) {
+    .rw-header .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .price-row {
+        font-size: 0.8rem;
+    }
+
+    .product-card .card-body {
+        padding: 0.75rem;
+    }
+
+    #cartSidebar {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}

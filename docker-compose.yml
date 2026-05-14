@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  web:
+    image: nginx:1.25-alpine
+    container_name: redwolf-web
+    ports:
+      - "${WEB_PORT:-80}:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - redwolf-net
+    restart: unless-stopped
+
+  php:
+    image: php:8.2-fpm-alpine
+    container_name: redwolf-php
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_NAME=${DB_NAME:-redwolf}
+      - DB_USER=${DB_USER:-redwolf}
+      - DB_PASS=${DB_PASS:-redwolf_secret}
+      - APP_ENV=${APP_ENV:-dev}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - CURRENCY_DEFAULT=${CURRENCY_DEFAULT:-HKD}
+      - USD_RATE=${USD_RATE:-7.82}
+      - CNY_RATE=${CNY_RATE:-1.08}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - redwolf-net
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    container_name: redwolf-db
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS:-root_secret}
+      MYSQL_DATABASE: ${DB_NAME:-redwolf}
+      MYSQL_USER: ${DB_USER:-redwolf}
+      MYSQL_PASSWORD: ${DB_PASS:-redwolf_secret}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASS:-root_secret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+    networks:
+      - redwolf-net
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:5.2-apache
+    container_name: redwolf-phpmyadmin
+    ports:
+      - "${PMA_PORT:-8080}:80"
+    environment:
+      PMA_HOST: ${DB_HOST:-db}
+      PMA_PORT: ${DB_PORT:-3306}
+      PMA_USER: ${DB_USER:-redwolf}
+      PMA_PASSWORD: ${DB_PASS:-redwolf_secret}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - redwolf-net
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: redwolf-ollama
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - redwolf-net
+    restart: unless-stopped
+
+volumes:
+  db_data:
+    driver: local
+  ollama_data:
+    driver: local
+
+networks:
+  redwolf-net:
+    driver: bridge

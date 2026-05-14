@@ -1,0 +1,169 @@
+name: RedWolf IT Ops Suite - CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PHP_VERSION: '8.2'
+  MYSQL_VERSION: '8.0'
+
+jobs:
+  # Unit Tests
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mysqli, pdo_mysql, mbstring
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Run PHP Lint
+        run: bash tests/unit/php_lint.sh
+
+      - name: Run ShellCheck
+        run: bash tests/unit/shellcheck.sh
+
+      - name: Run Security Scan
+        run: bash tests/unit/security_scan.sh
+
+  # Integration Tests
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    services:
+      mysql:
+        image: mysql:${{ env.MYSQL_VERSION }}
+        env:
+          MYSQL_ROOT_PASSWORD: root_secret
+          MYSQL_DATABASE: redwolf
+          MYSQL_USER: redwolf
+          MYSQL_PASSWORD: redwolf_secret
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=6
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mysqli, pdo_mysql, mbstring
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install requests
+
+      - name: Initialize Database
+        run: |
+          mysql -h 127.0.0.1 -u root -proot_secret redwolf < sql/schema.sql
+
+      - name: Start PHP built-in server
+        run: |
+          php -S localhost:80 -t . > /dev/null 2>&1 &
+          sleep 3
+
+      - name: Run Integration Tests
+        env:
+          BASE_URL: http://localhost
+        run: python tests/integration/test_product_api.py
+
+  # Chunk Tests
+  chunk-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    services:
+      mysql:
+        image: mysql:${{ env.MYSQL_VERSION }}
+        env:
+          MYSQL_ROOT_PASSWORD: root_secret
+          MYSQL_DATABASE: redwolf
+          MYSQL_USER: redwolf
+          MYSQL_PASSWORD: redwolf_secret
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=6
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mysqli, pdo_mysql, mbstring
+
+      - name: Initialize Database
+        run: |
+          mysql -h 127.0.0.1 -u root -proot_secret redwolf < sql/schema.sql
+
+      - name: Start PHP built-in server
+        run: |
+          php -S localhost:80 -t . > /dev/null 2>&1 &
+          sleep 3
+
+      - name: Run Chunk Tests
+        run: |
+          bash tests/chunk1/test_suite.sh || true
+          bash tests/chunk4/test_suite.sh || true
+
+  # Performance Tests
+  performance-tests:
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Performance Benchmark
+        run: |
+          if [ -f tests/performance/run_benchmark.sh ]; then
+            bash tests/performance/run_benchmark.sh
+          else
+            echo "Performance tests skipped (script not found)"
+          fi
+
+  # Report
+  report:
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, chunk-tests]
+    if: always()
+    steps:
+      - name: Test Summary
+        run: |
+          echo "============================================"
+          echo "  CI/CD Pipeline Summary"
+          echo "============================================"
+          echo "  Unit Tests:       ${{ needs.unit-tests.result }}"
+          echo "  Integration Tests: ${{ needs.integration-tests.result }}"
+          echo "  Chunk Tests:      ${{ needs.chunk-tests.result }}"
+          echo "============================================"

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printer Tools - RedWolf IT Ops</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .tool-card { box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075); border-radius: 0.5rem; }
+        .result-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 1rem; font-family: monospace; white-space: pre-wrap; min-height: 60px; }
+        .error-table { font-size: 0.85rem; }
+        .error-table td { vertical-align: top; }
+        .brand-hp { color: #0096d6; }
+        .brand-brother { color: #004b87; }
+        .brand-canon { color: #bc002d; }
+        .tab-content { padding-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/office_tools/">
+                <i class="bi bi-shield-lock"></i> RedWolf IT Ops
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/office_tools/network_scanner.php"><i class="bi bi-wifi"></i> Network Scanner</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/office_tools/printer_config.html"><i class="bi bi-printer"></i> Printer Tools</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/office_tools/vpn_status.php"><i class="bi bi-lock"></i> VPN Status</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2><i class="bi bi-printer"></i> Printer Tools</h2>
+        <p class="text-muted">Diagnostic utilities for office printer troubleshooting.</p>
+
+        <ul class="nav nav-tabs" id="printerTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="calc-tab" data-bs-toggle="tab" data-bs-target="#calc" type="button" role="tab">
+                    <i class="bi bi-calculator"></i> IP Calculator
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="port-tab" data-bs-toggle="tab" data-bs-target="#port" type="button" role="tab">
+                    <i class="bi bi-plug"></i> Port Tester
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="errors-tab" data-bs-toggle="tab" data-bs-target="#errors" type="button" role="tab">
+                    <i class="bi bi-exclamation-triangle"></i> Error Code Lookup
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="drivers-tab" data-bs-toggle="tab" data-bs-target="#drivers" type="button" role="tab">
+                    <i class="bi bi-download"></i> Driver Downloads
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="printerTabsContent">
+            <!-- Tab 1: IP Calculator -->
+            <div class="tab-pane fade show active" id="calc" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="card tool-card">
+                            <div class="card-header bg-dark text-white">
+                                <i class="bi bi-calculator"></i> Subnet Calculator
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="calc-ip" class="form-label">IP Address</label>
+                                    <input type="text" class="form-control" id="calc-ip" value="192.168.1.100" placeholder="e.g. 192.168.1.100">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="calc-mask" class="form-label">Subnet Mask</label>
+                                    <input type="text" class="form-control" id="calc-mask" value="255.255.255.0" placeholder="e.g. 255.255.255.0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="calc-cidr" class="form-label">Or CIDR Notation</label>
+                                    <input type="number" class="form-control" id="calc-cidr" min="0" max="32" value="24" placeholder="0-32">
+                                </div>
+                                <button type="button" class="btn btn-danger w-100" onclick="calculateSubnet()">
+                                    <i class="bi bi-calculator"></i> Calculate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card tool-card">
+                            <div class="card-header bg-dark text-white">Results</div>
+                            <div class="card-body">
+                                <div class="result-box" id="calc-result">
+                                    Enter an IP address and subnet mask, then click Calculate.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Port Tester -->
+            <div class="tab-pane fade" id="port" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="card tool-card">
+                            <div class="card-header bg-dark text-white">
+                                <i class="bi bi-plug"></i> Printer Port Tester
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted small">Tests if a printer port is reachable. Note: direct port testing from a browser is limited. This tool generates the commands you can run from your terminal.</p>
+                                <div class="mb-3">
+                                    <label for="port-ip" class="form-label">Printer IP Address</label>
+                                    <input type="text" class="form-control" id="port-ip" placeholder="e.g. 192.168.1.50">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="port-num" class="form-label">Port Number</label>
+                                    <input type="number" class="form-control" id="port-num" value="9100" placeholder="9100 (default printer port)">
+                                </div>
+                                <button type="button" class="btn btn-danger w-100" onclick="testPrinterPort()">
+                                    <i class="bi bi-lightning"></i> Test Connection
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card tool-card">
+                            <div class="card-header bg-dark text-white">Test Results</div>
+                            <div class="card-body">
+                                <div class="result-box" id="port-result">
+                                    Enter a printer IP and port, then click Test Connection.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Error Code Lookup -->
+            <div class="tab-pane fade" id="errors" role="tabpanel">
+                <div class="card tool-card">
+                    <div class="card-header bg-dark text-white">
+                        <i class="bi bi-exclamation-triangle"></i> Printer Error Code Lookup
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="error-search" placeholder="Search error code or description..." oninput="filterErrors()">
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-select" id="error-brand" onchange="filterErrors()">
+                                    <option value="all">All Brands</option>
+                                    <option value="HP">HP</option>
+                                    <option value="Brother">Brother</option>
+                                    <option value="Canon">Canon</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm error-table" id="error-table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Brand</th>
+                                        <th>Code</th>
+                                        <th>Description</th>
+                                        <th>Solution</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="error-body"></tbody>
+                            </table>
+                        </div>
+                        <p class="text-muted small mt-2" id="error-count"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Driver Downloads -->
+            <div class="tab-pane fade" id="drivers" role="tabpanel">
+                <div class="card tool-card">
+                    <div class="card-header bg-dark text-white">
+                        <i class="bi bi-download"></i> Printer Driver Downloads
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">Curated links to official driver download pages. Always download drivers from the manufacturer's official website.</p>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header brand-hp">HP</div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2"><i class="bi bi-link-45deg"></i> <a href="https://support.hp.com/drivers" target="_blank" rel="noopener">HP Software & Driver Downloads</a></li>
+                                            <li class="mb-2"><i class="bi bi-link-45deg"></i> <a href="https://support.hp.com/us-en/drivers/printers" target="_blank" rel="noopener">HP Printer Drivers</a></li>
+                                            <li><i class="bi bi-link-45deg"></i> <a href="https://hp-eprint.eprint-center.com" target="_blank" rel="noopener">HP ePrint Center</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header brand-brother">Brother</div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2"><i class="bi bi-link-45deg"></i> <a href="https://support.brother.com/g/b/downloadtop.aspx?c=us&lang=en&prod=all" target="_blank" rel="noopener">Brother Downloads</a></li>
+                                            <li class="mb-2"><i class="bi bi-link-45deg"></i> <a href="https://support.brother.com/g/b/productsearch.aspx?c=us&lang=en&content=dl" target="_blank" rel="noopener">Brother Printer Drivers</a></li>
+                                            <li><i class="bi bi-link-45deg"></i> <a href="https://www.brother.com/us-en/support/faq/000001000002" target="_blank" rel="noopener">Brother iPrint&Scan App</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header brand-canon">Canon</div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2"><i class="bi bi-link-45deg"></i> <a href="https://www.usa.canon.com/support/software-and-drivers" target="_blank" rel="noopener">Canon Software & Drivers</a></li>
+                                            <li class="mb-2"><i class="bi bi-link-45deg"></i> <a href="https://www.usa.canon.com/support/help-center" target="_blank" rel="noopener">Canon Help Center</a></li>
+                                            <li><i class="bi bi-link-45deg"></i> <a href="https://www.canon.com/icpd/" target="_blank" rel="noopener">Canon PIXMA/MAXIFY Drivers</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header" style="background:#007b83; color:#fff;">Epson</div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2"><i class="bi bi-link-45deg"></i> <a href="https://epson.com/Support/Printers/sh/s1" target="_blank" rel="noopener">Epson Printer Support</a></li>
+                                            <li><i class="bi bi-link-45deg"></i> <a href="https://epson.com/Support/Drivers-and-Downloads" target="_blank" rel="noopener">Epson Driver Downloads</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-dark text-white">Xerox</div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2"><i class="bi bi-link-45deg"></i> <a href="https://www.support.xerox.com/en-us" target="_blank" rel="noopener">Xerox Support</a></li>
+                                            <li><i class="bi bi-link-45deg"></i> <a href="https://www.support.xerox.com/en-us/download" target="_blank" rel="noopener">Xerox Drivers & Downloads</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header" style="background:#005ca1; color:#fff;">Samsung</div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2"><i class="bi bi-link-45deg"></i> <a href="https://www.samsung.com/us/support/downloads/printers/" target="_blank" rel="noopener">Samsung Printer Downloads</a></li>
+                                            <li><i class="bi bi-link-45deg"></i> <a href="https://support.hp.com/hp-en-us/samsung-support" target="_blank" rel="noopener">Samsung Printer Support (HP)</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center text-muted mt-5 mb-3">
+        <small>RedWolf IT Ops Suite - Printer Tools</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // ============================================================
+    // Printer Error Code Database (30+ codes)
+    // ============================================================
+    const ERROR_CODES = [
+        // HP Errors
+        { brand: "HP", code: "49.xxxx", description: "Firmware error or communication error", solution: "Turn printer off, wait 30 seconds, turn back on. Update firmware if issue persists." },
+        { brand: "HP", code: "50.x", description: "Fuser error - low temperature", solution: "Check fuser connection. Replace fuser if damaged." },
+        { brand: "HP", code: "50.1", description: "Fuser error - low temperature", solution: "Verify fuser power supply. May need fuser replacement." },
+        { brand: "HP", code: "50.2", description: "Fuser error - temperature warm-up", solution: "Check fuser lamp. Reseat fuser connectors." },
+        { brand: "HP", code: "50.4", description: "Fuser error - high temperature", solution: "Power off and let cool. Check for paper jams in fuser area." },
+        { brand: "HP", code: "51.x", description: "Laser/scanner error", solution: "Reseat scanner cables. Check scanner motor. Replace scanner if needed." },
+        { brand: "HP", code: "52.x", description: "Scanner motor error", solution: "Check scanner cable connections. Replace scanner assembly." },
+        { brand: "HP", code: "13.x", description: "Paper jam", solution: "Open all doors and remove jammed paper. Check paper path for torn pieces." },
+        { brand: "HP", code: "10.xxxx", description: "Supplies memory error", solution: "Remove and reinsert toner cartridge. Replace if cartridge is defective." },
+        { brand: "HP", code: "11.xxxx", description: "Paper out or empty tray", solution: "Load paper into the indicated tray. Check paper size settings." },
+        { brand: "HP", code: "79.xxxx", description: "Critical error - internal firmware failure", solution: "Power cycle printer. Disconnect all cables. Update firmware. Replace formatter board if persists." },
+
+        // Brother Errors
+        { brand: "Brother", code: "Unable to Print 50", description: "Internal malfunction - mechanical error", solution: "Power off, check for foreign objects inside. Remove drum and toner, inspect. Power back on." },
+        { brand: "Brother", code: "Unable to Print 4F", description: "Head failure or head thermistor error", solution: "Power off and on. If persists, the print head may need replacement." },
+        { brand: "Brother", code: "Unable to Init 48", description: "Failed to initialize print head", solution: "Turn off, wait 10 seconds, turn on. Replace print head if error continues." },
+        { brand: "Brother", code: "Unable to Clean", description: "Print head cleaning failed", solution: "Clean encoder strip. Check print head cables. May need print head replacement." },
+        { brand: "Brother", code: "Paper Jam", description: "Paper jammed in printer", solution: "Open front and rear covers. Gently remove jammed paper. Check paper rollers." },
+        { brand: "Brother", code: "No Paper Fed / Check Paper", description: "Printer cannot pick up paper", solution: "Fan paper stack. Clean pickup rollers with damp cloth. Adjust paper guides." },
+        { brand: "Brother", code: "Toner Life End", description: "Toner cartridge is empty", solution: "Replace the toner cartridge with a genuine Brother cartridge." },
+        { brand: "Brother", code: "Drum End Soon", description: "Drum unit near end of life", solution: "Replace the drum unit (DR-series). Reset drum counter after replacement." },
+        { brand: "Brother", code: "Replace Fuser", description: "Fuser unit needs replacement", solution: "Replace the fuser unit. Reset fuser counter after installation." },
+        { brand: "Brother", code: "Connection Fail", description: "Cannot communicate with computer", solution: "Check USB/network cable. Reinstall printer driver. Restart both devices." },
+
+        // Canon Errors
+        { brand: "Canon", code: "5100", description: "Carriage error - print head cannot move", solution: "Power off, check for obstructions. Move carriage manually. Clean encoder strip." },
+        { brand: "Canon", code: "6000", description: "Line feed error", solution: "Check for paper jams. Inspect feed rollers and timing strip. Clean or replace if damaged." },
+        { brand: "Canon", code: "5B00", description: "Waste ink absorber full", solution: "Reset waste ink counter. Replace or clean the waste ink absorber pad." },
+        { brand: "Canon", code: "E04 / E05", description: "Wrong cartridge installed", solution: "Remove and reinsert ink cartridges. Ensure correct cartridge model for your printer." },
+        { brand: "Canon", code: "P08 / 5200", description: "Print head temperature rise error", solution: "Power off and let cool. Check for paper jams. Replace print head if error persists." },
+        { brand: "Canon", code: "P02", description: "Carriage error", solution: "Open cover and check print head position. Remove obstructions. Reseat cartridges." },
+        { brand: "Canon", code: "P10 / 6A80", description: "Logic board error", solution: "Power cycle. Disconnect all cables. If persistent, logic board may need replacement." },
+        { brand: "Canon", code: "P15", description: "USB communication error", solution: "Try a different USB cable. Reinstall drivers. Try a different USB port." },
+        { brand: "Canon", code: "1403", description: "Print head not installed", solution: "Remove and firmly reinsert the print head. Ensure it clicks into position." },
+        { brand: "Canon", code: "1686", description: "Ink absorber almost full", solution: "Continue using but plan to replace ink absorber soon. Consider service." },
+        { brand: "Canon", code: "B200", description: "Print head voltage/temperature error", solution: "Turn off, wait, turn on. If persists, replace print head or logic board." },
+    ];
+
+    // ============================================================
+    // IP Subnet Calculator
+    // ============================================================
+    function calculateSubnet() {
+        const ip = document.getElementById('calc-ip').value.trim();
+        const maskInput = document.getElementById('calc-mask').value.trim();
+        const cidrInput = document.getElementById('calc-cidr').value;
+
+        const ipParts = ip.split('.').map(Number);
+        if (ipParts.length !== 4 || ipParts.some(p => isNaN(p) || p < 0 || p > 255)) {
+            document.getElementById('calc-result').textContent = 'Error: Invalid IP address format.';
+            return;
+        }
+
+        let cidr;
+        if (maskInput) {
+            const maskParts = maskInput.split('.').map(Number);
+            if (maskParts.length !== 4 || maskParts.some(p => isNaN(p) || p < 0 || p > 255)) {
+                document.getElementById('calc-result').textContent = 'Error: Invalid subnet mask format.';
+                return;
+            }
+            const maskLong = (maskParts[0] << 24) | (maskParts[1] << 16) | (maskParts[2] << 8) | maskParts[3];
+            // Validate contiguous mask
+            const inverted = (~maskLong >>> 0) + 1;
+            if ((inverted & (inverted - 1)) !== 0 && inverted !== 0) {
+                document.getElementById('calc-result').textContent = 'Error: Invalid subnet mask (not contiguous).';
+                return;
+            }
+            cidr = maskLong.toString(2).split('').filter(b => b === '1').length;
+        } else {
+            cidr = parseInt(cidrInput) || 24;
+        }
+
+        if (cidr < 0 || cidr > 32) {
+            document.getElementById('calc-result').textContent = 'Error: CIDR must be between 0 and 32.';
+            return;
+        }
+
+        const ipLong = (ipParts[0] << 24) | (ipParts[1] << 16) | (ipParts[2] << 8) | ipParts[3];
+        const mask = cidr === 0 ? 0 : (~0 << (32 - cidr)) >>> 0;
+        const network = (ipLong & mask) >>> 0;
+        const broadcast = (network | (~mask >>> 0)) >>> 0;
+        const firstHost = cidr >= 31 ? network : (network + 1) >>> 0;
+        const lastHost = cidr >= 31 ? broadcast : (broadcast - 1) >>> 0;
+        const totalHosts = Math.max(0, lastHost - firstHost + 1);
+
+        const toIp = (n) => [(n >>> 24) & 0xFF, (n >>> 16) & 0xFF, (n >>> 8) & 0xFF, n & 0xFF].join('.');
+
+        const result = `IP Address:    ${toIp(ipLong)}
+Subnet Mask:   ${toIp(mask)}
+CIDR Notation: /${cidr}
+
+Network:       ${toIp(network)}
+Broadcast:     ${toIp(broadcast)}
+Host Range:    ${toIp(firstHost)} - ${toIp(lastHost)}
+Total Hosts:   ${totalHosts}
+`;
+
+        document.getElementById('calc-result').textContent = result;
+    }
+
+    // Sync CIDR and subnet mask inputs
+    document.getElementById('calc-mask').addEventListener('input', function() {
+        const parts = this.value.trim().split('.').map(Number);
+        if (parts.length === 4 && parts.every(p => !isNaN(p) && p >= 0 && p <= 255)) {
+            const maskLong = (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3];
+            document.getElementById('calc-cidr').value = maskLong.toString(2).split('').filter(b => b === '1').length;
+        }
+    });
+
+    document.getElementById('calc-cidr').addEventListener('input', function() {
+        const cidr = parseInt(this.value);
+        if (!isNaN(cidr) && cidr >= 0 && cidr <= 32) {
+            const mask = cidr === 0 ? 0 : (~0 << (32 - cidr)) >>> 0;
+            const parts = [(mask >>> 24) & 0xFF, (mask >>> 16) & 0xFF, (mask >>> 8) & 0xFF, mask & 0xFF];
+            document.getElementById('calc-mask').value = parts.join('.');
+        }
+    });
+
+    // ============================================================
+    // Port Tester (generates test commands for terminal)
+    // ============================================================
+    function testPrinterPort() {
+        const ip = document.getElementById('port-ip').value.trim();
+        const port = document.getElementById('port-num').value || '9100';
+
+        const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+        if (!ipRegex.test(ip)) {
+            document.getElementById('port-result').textContent = 'Error: Invalid IP address format.';
+            return;
+        }
+
+        const portNum = parseInt(port);
+        if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+            document.getElementById('port-result').textContent = 'Error: Port number must be between 1 and 65535.';
+            return;
+        }
+
+        const result = `Target: ${ip}:${portNum}
+Type:   Direct printer port test (Raw/JetDirect)
+
+=== Test Commands (run from your terminal) ===
+
+Windows (PowerShell):
+  Test-NetConnection -ComputerName ${ip} -Port ${portNum}
+
+Windows (CMD):
+  telnet ${ip} ${portNum}
+
+Linux / macOS:
+  nc -zv ${ip} ${portNum}
+  # or: nmap -p ${portNum} ${ip}
+
+=== Tips ===
+- Port 9100 is the standard HP JetDirect / Raw printing port
+- A successful connection means the printer is accepting print jobs
+- If the port is blocked, check firewall rules
+- If using a print server, verify the port mapping
+
+Note: Direct port testing cannot be performed from a web browser
+due to security restrictions. Use one of the commands above.`;
+
+        document.getElementById('port-result').textContent = result;
+    }
+
+    // ============================================================
+    // Error Code Lookup
+    // ============================================================
+    function filterErrors() {
+        const search = document.getElementById('error-search').value.toLowerCase();
+        const brand = document.getElementById('error-brand').value;
+        const tbody = document.getElementById('error-body');
+
+        const filtered = ERROR_CODES.filter(e => {
+            const matchBrand = brand === 'all' || e.brand === brand;
+            const matchSearch = !search ||
+                e.code.toLowerCase().includes(search) ||
+                e.description.toLowerCase().includes(search) ||
+                e.solution.toLowerCase().includes(search);
+            return matchBrand && matchSearch;
+        });
+
+        tbody.innerHTML = filtered.map(e => {
+            const brandClass = e.brand === 'HP' ? 'brand-hp' : e.brand === 'Brother' ? 'brand-brother' : 'brand-canon';
+            return `<tr>
+                <td class="fw-bold ${brandClass}">${e.brand}</td>
+                <td><code>${e.code}</code></td>
+                <td>${e.description}</td>
+                <td>${e.solution}</td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('error-count').textContent =
+            `Showing ${filtered.length} of ${ERROR_CODES.length} error codes`;
+    }
+
+    // Initialize error table on page load
+    filterErrors();
+    </script>
+</body>
+</html>

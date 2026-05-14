@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RedWolf AI Ticket Classifier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #1a1a2e; color: #e0e0e0; min-height: 100vh; }
+        .card { background-color: #16213e; border-color: #0f3460; }
+        .btn-classify { background-color: #e94560; border-color: #e94560; color: white; }
+        .btn-classify:hover { background-color: #c73a52; border-color: #c73a52; color: white; }
+        .btn-classify:disabled { background-color: #555; border-color: #555; }
+        .text-muted { color: #8892a0 !important; }
+        .table { color: #e0e0e0; }
+        .table-dark { --bs-table-bg: #16213e; --bs-table-border-color: #0f3460; }
+        .badge { font-weight: 500; }
+        .badge-hardware { background-color: #e74c3c; }
+        .badge-software { background-color: #3498db; }
+        .badge-network { background-color: #2ecc71; }
+        .badge-security { background-color: #e67e22; }
+        .badge-access_request { background-color: #9b59b6; }
+        .badge-printer { background-color: #1abc9c; }
+        .badge-vpn { background-color: #f39c12; }
+        .badge-email { background-color: #00b4d8; }
+        .badge-other { background-color: #6c757d; }
+        .priority-high { color: #e74c3c; }
+        .priority-medium { color: #f39c12; }
+        .priority-low { color: #2ecc71; }
+        .confidence-bar { height: 24px; border-radius: 4px; transition: width 0.5s ease; }
+        .sample-ticket { cursor: pointer; transition: all 0.2s; border-color: #0f3460 !important; }
+        .sample-ticket:hover { border-color: #e94560 !important; background-color: #1a2744 !important; }
+        .result-card { display: none; }
+        .result-card.visible { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .spinner-border-sm { width: 1rem; height: 1rem; }
+        textarea { background-color: #0f3460; border-color: #1a3a5c; color: #e0e0e0; }
+        textarea:focus { background-color: #0f3460; border-color: #e94560; color: #e0e0e0; box-shadow: 0 0 0 0.2rem rgba(233, 69, 96, 0.25); }
+        .brand-text { color: #e94560; }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="display-5 fw-bold"><span class="brand-text">RedWolf</span> AI Ticket Classifier</h1>
+            <p class="text-muted">Privacy-first intelligent ticket classification - data never leaves your network</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left Column: Input -->
+            <div class="col-lg-7">
+                <!-- Input Card -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Ticket Description</h5>
+                        <span id="charCount" class="text-muted small">0 / 2000</span>
+                    </div>
+                    <div class="card-body">
+                        <textarea id="ticketText" class="form-control" rows="5" maxlength="2000"
+                            placeholder="Paste or type the IT support ticket description here..."></textarea>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <input type="text" id="ticketId" class="form-control form-control-sm"
+                                style="max-width: 200px;" placeholder="Ticket ID (optional)">
+                            <button id="classifyBtn" class="btn btn-classify px-4" onclick="classifyTicket()">
+                                Classify Ticket
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Card -->
+                <div id="resultCard" class="card result-card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Classification Result</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <label class="text-muted small">Category</label>
+                                <div><span id="resultCategory" class="badge badge-other fs-6">-</span></div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="text-muted small">Priority</label>
+                                <div id="resultPriority" class="fw-bold">-</div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="text-muted small">Classifier</label>
+                                <div id="resultClassifier" class="text-muted">-</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small">Confidence</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="height: 24px; background-color: #0f3460;">
+                                    <div id="confidenceBar" class="confidence-bar" style="width: 0%; background-color: #e94560;">0%</div>
+                                </div>
+                                <span id="confidenceValue" class="fw-bold small" style="min-width: 45px;">0%</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small">Reasoning</label>
+                            <p id="resultReasoning" class="mb-0 fst-italic">-</p>
+                        </div>
+                        <div class="text-end">
+                            <span id="responseTime" class="text-muted small">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Tickets -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Sample Tickets</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <div class="list-group-item sample-ticket border" onclick="loadSample(0)">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <small class="text-muted">Hardware</small>
+                                    <small class="text-muted">High Priority</small>
+                                </div>
+                                "The POS terminal at Store #3 keeps freezing during transactions. We've restarted it twice already and it works for about 10 minutes before locking up again."
+                            </div>
+                            <div class="list-group-item sample-ticket border" onclick="loadSample(1)">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <small class="text-muted">VPN</small>
+                                    <small class="text-muted">Medium Priority</small>
+                                </div>
+                                "I'm working from home today and cannot connect to the VPN. It gets stuck at 'Connecting...' and then times out. I've tried restarting the AnyConnect client."
+                            </div>
+                            <div class="list-group-item sample-ticket border" onclick="loadSample(2)">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <small class="text-muted">Network</small>
+                                    <small class="text-muted">High Priority</small>
+                                </div>
+                                "The entire warehouse has lost internet connectivity. All WiFi access points show as offline in the management console. This is affecting our shipping operations."
+                            </div>
+                            <div class="list-group-item sample-ticket border" onclick="loadSample(3)">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <small class="text-muted">Access Request</small>
+                                    <small class="text-muted">Low Priority</small>
+                                </div>
+                                "New warehouse staff member Jake starts on Monday. He needs access to the inventory management system and the warehouse email distribution list."
+                            </div>
+                            <div class="list-group-item sample-ticket border" onclick="loadSample(4)">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <small class="text-muted">Security</small>
+                                    <small class="text-muted">High Priority</small>
+                                </div>
+                                "Our antivirus system flagged multiple suspicious files on the marketing department's shared drive. Several files appear to be ransomware-related. Please investigate immediately."
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: History -->
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Classification History</h5>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="loadHistory()">Refresh</button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket</th>
+                                        <th>Category</th>
+                                        <th>Priority</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyBody">
+                                    <tr><td colspan="3" class="text-center text-muted py-4">No classifications yet</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-muted mt-5">
+            <small>RedWolf IT Ops Suite - AI Ticket Classifier v1.0 | All processing runs locally</small>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- State ---
+        const history = [];
+
+        // --- Sample tickets ---
+        const samples = [
+            'The POS terminal at Store #3 keeps freezing during transactions. We\'ve restarted it twice already and it works for about 10 minutes before locking up again.',
+            'I\'m working from home today and cannot connect to the VPN. It gets stuck at "Connecting..." and then times out. I\'ve tried restarting the AnyConnect client.',
+            'The entire warehouse has lost internet connectivity. All WiFi access points show as offline in the management console. This is affecting our shipping operations.',
+            'New warehouse staff member Jake starts on Monday. He needs access to the inventory management system and the warehouse email distribution list.',
+            'Our antivirus system flagged multiple suspicious files on the marketing department\'s shared drive. Several files appear to be ransomware-related. Please investigate immediately.',
+        ];
+
+        // --- DOM references ---
+        const ticketText = document.getElementById('ticketText');
+        const ticketId = document.getElementById('ticketId');
+        const charCount = document.getElementById('charCount');
+        const classifyBtn = document.getElementById('classifyBtn');
+        const resultCard = document.getElementById('resultCard');
+        const historyBody = document.getElementById('historyBody');
+
+        // --- Character counter ---
+        ticketText.addEventListener('input', () => {
+            const len = ticketText.value.length;
+            charCount.textContent = len + ' / 2000';
+            charCount.style.color = len > 1800 ? '#e94560' : '#8892a0';
+        });
+
+        // --- Load sample ticket ---
+        function loadSample(index) {
+            ticketText.value = samples[index];
+            ticketText.dispatchEvent(new Event('input'));
+            ticketId.value = 'SAMPLE-' + (index + 1).toString().padStart(3, '0');
+        }
+
+        // --- Main classify function ---
+        async function classifyTicket() {
+            const text = ticketText.value.trim();
+            if (!text) {
+                alert('Please enter a ticket description.');
+                return;
+            }
+
+            const id = ticketId.value.trim() || ('TKT-' + Date.now().toString(36).toUpperCase());
+
+            // Show loading state
+            classifyBtn.disabled = true;
+            classifyBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Classifying...';
+            resultCard.classList.remove('visible');
+
+            try {
+                const response = await fetch('api_endpoint.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text, ticket_id: id }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Classification failed');
+                }
+
+                displayResult(data);
+                addToHistory(data);
+
+            } catch (err) {
+                alert('Error: ' + err.message + '\n\nMake sure the PHP API and Python FastAPI service are running.');
+            } finally {
+                classifyBtn.disabled = false;
+                classifyBtn.textContent = 'Classify Ticket';
+            }
+        }
+
+        // --- Display classification result ---
+        function displayResult(data) {
+            // Category badge
+            const catEl = document.getElementById('resultCategory');
+            catEl.textContent = data.category.replace('_', ' ').toUpperCase();
+            catEl.className = 'badge badge-' + data.category + ' fs-6';
+
+            // Priority
+            const priEl = document.getElementById('resultPriority');
+            priEl.textContent = data.priority.toUpperCase();
+            priEl.className = 'fw-bold priority-' + data.priority;
+
+            // Classifier
+            document.getElementById('resultClassifier').textContent =
+                data.classifier === 'ollama' ? 'Ollama (LLM)' :
+                data.classifier === 'keyword' ? 'Keyword Fallback' :
+                data.classifier || 'Unknown';
+
+            // Confidence bar
+            const pct = Math.round((data.confidence || 0) * 100);
+            const bar = document.getElementById('confidenceBar');
+            bar.style.width = pct + '%';
+            bar.textContent = pct + '%';
+            bar.style.backgroundColor =
+                pct >= 80 ? '#2ecc71' : pct >= 60 ? '#f39c12' : '#e74c3c';
+            document.getElementById('confidenceValue').textContent = pct + '%';
+
+            // Reasoning
+            document.getElementById('resultReasoning').textContent = data.reasoning || 'No reasoning provided';
+
+            // Response time
+            document.getElementById('responseTime').textContent =
+                data.response_time_ms ? data.response_time_ms.toFixed(1) + ' ms' : '';
+
+            resultCard.classList.add('visible');
+        }
+
+        // --- History management ---
+        function addToHistory(data) {
+            history.unshift(data);
+            if (history.length > 20) history.pop();
+            renderHistory();
+        }
+
+        function renderHistory() {
+            if (history.length === 0) {
+                historyBody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">No classifications yet</td></tr>';
+                return;
+            }
+
+            historyBody.innerHTML = history.map(item => {
+                const cat = (item.category || 'other').replace('_', ' ');
+                const pri = (item.priority || 'medium').toUpperCase();
+                const priClass = 'priority-' + (item.priority || 'medium');
+                return `<tr>
+                    <td><small>${item.ticket_id || '-'}</small></td>
+                    <td><span class="badge badge-${item.category || 'other'}">${cat}</span></td>
+                    <td><small class="${priClass}">${pri}</small></td>
+                </tr>`;
+            }).join('');
+        }
+
+        // --- Load history from service ---
+        async function loadHistory() {
+            try {
+                const response = await fetch('http://localhost:8001/history');
+                if (!response.ok) return;
+                const data = await response.json();
+                if (data.classifications && data.classifications.length > 0) {
+                    history.length = 0;
+                    history.push(...data.classifications.slice(-20).reverse());
+                    renderHistory();
+                }
+            } catch (e) {
+                // History service may not be running
+            }
+        }
+
+        // --- Init ---
+        loadHistory();
+    </script>
+</body>
+</html>

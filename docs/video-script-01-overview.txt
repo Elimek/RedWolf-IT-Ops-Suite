@@ -1,0 +1,54 @@
+# Video Script 01: Overview (3 Minutes)
+
+## Scene Breakdown
+
+### [0:00-0:10] Title Card
+**[Visual: RedWolf logo on dark background, text fades in]**
+"RedWolf IT Officer Demo - Complete Operations Suite"
+
+### [0:10-0:30] Problem Statement
+**[Camera: Talking head or voiceover]**
+"RedWolf Airsoft Specialist needs an IT Officer who can manage e-commerce platforms, monitor servers, support office operations, and leverage AI - all while keeping costs low and data private."
+
+**[Visual: Text overlays appear for each responsibility]**
+- E-commerce (Magento)
+- Server monitoring
+- Office IT support
+- AI integration
+
+### [0:30-1:30] Solution Walkthrough
+**[Camera: Screen recording of the application]**
+
+**[0:30-0:45] Landing Page**
+"Here's what I built. A single Docker-based platform with four integrated modules."
+
+**[0:45-1:00] E-Commerce**
+"Module one: a Magento-style product management system with multi-currency support and concurrent-safe inventory."
+
+**[1:00-1:15] Monitoring**
+"Module two: real-time server monitoring with Chart.js dashboards and automatic alerting."
+
+**[1:15-1:30] AI + Office Tools**
+"Module three: local AI ticket classification. Module four: office support tools including network scanner and printer diagnostics."
+
+### [1:30-2:15] Key Technical Highlights
+**[Camera: Code editor showing key snippets]**
+
+**[1:30-1:45] Security**
+"Security is built in: CSRF tokens, prepared statements, command injection prevention, and audit logging."
+
+**[1:45-2:00] Architecture**
+"The entire stack is zero-dependency. No Composer, no NPM. Everything written from scratch in PHP 8.2 with MySQL 8.0."
+
+**[2:00-2:15] Privacy**
+"AI runs on-premise via Ollama. No data leaves the internal network. Zero API cost."
+
+### [2:15-2:45] Business Value
+**[Camera: VALUE.md document on screen]**
+"This system saves approximately HK$35,000 per month in operational costs. The ROI is 686% in the first year."
+
+### [2:45-3:00] Call to Action
+**[Camera: GitHub URL and live demo URL on screen]**
+"The code is fully open source. Deploy it with one command. Let me show you how it works."
+
+**[Visual: Fade to black, show GitHub URL]**
