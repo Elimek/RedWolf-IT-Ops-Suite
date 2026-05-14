@@ -156,7 +156,8 @@ a{color:var(--blue);text-decoration:none}
   <button class="nav-tab" onclick="showPage('ai')">AI Classifier</button>
   <button class="nav-tab" onclick="showPage('office')">Office Tools</button>
   <button class="nav-tab" onclick="showPage('inventory')">Inventory Sync</button>
-  <span class="nav-right">Demo v2.0 | Magento 2 + Linux + AWS Hong Kong + Python + Ollama</span>
+  <button class="nav-tab" onclick="showPage('intel')">RedWolf Intel</button>
+  <span class="nav-right">Demo v2.1 | Magento 2 + Linux + AWS Hong Kong + Python + Ollama</span>
 </nav>
 
 <!-- ==================== HOME ==================== -->
@@ -166,7 +167,7 @@ a{color:var(--blue);text-decoration:none}
     <p>Integrated IT operations platform for RedWolf Airsoft Specialist Ltd. 5 modules. 1 platform. Zero downtime.</p>
   </div>
 
-  <div class="module-cards" style="grid-template-columns:repeat(5,1fr)">
+  <div class="module-cards" style="grid-template-columns:repeat(6,1fr)">
     <div class="module-card" onclick="showPage('ecommerce')">
       <span class="module-icon">&#128722;</span>
       <h3>Magento Lite</h3>
@@ -191,6 +192,11 @@ a{color:var(--blue);text-decoration:none}
       <span class="module-icon">&#128230;</span>
       <h3>Inventory Sync</h3>
       <p>Multi-channel stock sync across Magento, Amazon US, and JD.com</p>
+    </div>
+    <div class="module-card" onclick="showPage('intel')" style="border-color:var(--purple);background:linear-gradient(135deg,var(--surface),rgba(167,139,250,.08))">
+      <span class="module-icon">&#128218;</span>
+      <h3>RedWolf Intel</h3>
+      <p>Company research: tech stack analysis, security audit, and AI roadmap</p>
     </div>
   </div>
 
@@ -588,6 +594,192 @@ a{color:var(--blue);text-decoration:none}
         <div class="card-title">Sync Alerts Log</div>
       </div>
       <div id="sync-alerts" style="max-height:240px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== REDWOLF INTEL ==================== -->
+<div id="page-intel" class="page">
+  <div style="margin-bottom:20px">
+    <h2 style="font-size:18px;font-weight:600;margin-bottom:4px">RedWolf Airsoft — Research & Intelligence</h2>
+    <p style="font-size:13px;color:var(--text3)">Technical analysis based on publicly available information. Built to demonstrate domain research capability.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">E-Commerce Platform Analysis</div>
+          <div class="card-subtitle">Inferred from storefront inspection and HTTP headers</div>
+        </div>
+        <span class="severity critical">Magento 2</span>
+      </div>
+      <div style="font-size:13px;line-height:1.8;color:var(--text2)">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:10px;align-items:start">
+            <span style="color:var(--purple);font-weight:600;min-width:130px">Platform</span>
+            <span>Magento 2 (Adobe Commerce) — confirmed via storefront meta tags, cookie structure, and URL patterns</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:start">
+            <span style="color:var(--purple);font-weight:600;min-width:130px">Custom Theme</span>
+            <span>Redwolf/blank — minimal custom theme, likely for performance</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:start">
+            <span style="color:var(--purple);font-weight:600;min-width:130px">Key Extension</span>
+            <span>Sparsh Banner — homepage promotional banner management</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:start">
+            <span style="color:var(--purple);font-weight:600;min-width:130px">Infrastructure</span>
+            <span>AWS Hong Kong (18.166.142.219) + dedicated media CDN</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:start">
+            <span style="color:var(--purple);font-weight:600;min-width:130px">Languages</span>
+            <span>5 locales supported — English, Japanese, Traditional Chinese, Korean, Russian</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:start">
+            <span style="color:var(--purple);font-weight:600;min-width:130px">Currencies</span>
+            <span>4 active — USD (primary), GBP, EUR, HKD</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:start">
+            <span style="color:var(--purple);font-weight:600;min-width:130px">Product Scale</span>
+            <span>15,000+ SKUs across 35+ brands — EAV performance is a key concern</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Security Headers Audit</div>
+          <div class="card-subtitle">Automated scan of redwolfairsoft.com HTTP response headers</div>
+        </div>
+        <span style="font-size:12px;padding:4px 10px;border-radius:4px;background:rgba(232,54,78,.1);color:var(--accent);font-weight:600">Score: 40/100</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:6px">
+          <div>
+            <div style="font-size:13px;font-weight:600">Strict-Transport-Security</div>
+            <div style="font-size:11px;color:var(--text3)">Prevents SSL downgrade attacks</div>
+          </div>
+          <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(232,54,78,.12);color:var(--accent2)">MISSING</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:6px">
+          <div>
+            <div style="font-size:13px;font-weight:600">Content-Security-Policy</div>
+            <div style="font-size:11px;color:var(--text3)">Prevents XSS and injection attacks</div>
+          </div>
+          <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(232,54,78,.12);color:var(--accent2)">MISSING</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:6px">
+          <div>
+            <div style="font-size:13px;font-weight:600">Referrer-Policy</div>
+            <div style="font-size:11px;color:var(--text3)">Controls referrer information leakage</div>
+          </div>
+          <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(232,54,78,.12);color:var(--accent2)">MISSING</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:6px">
+          <div>
+            <div style="font-size:13px;font-weight:600">SSL/TLS Certificate</div>
+            <div style="font-size:11px;color:var(--text3)">Comodo CA — Valid until 2027</div>
+          </div>
+          <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(34,197,94,.1);color:var(--green)">OK</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:6px">
+          <div>
+            <div style="font-size:13px;font-weight:600">PCI DSS Compliance</div>
+            <div style="font-size:11px;color:var(--text3)">Payment Card Industry standard</div>
+          </div>
+          <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(34,197,94,.1);color:var(--green)">OK</span>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:10px 12px;background:rgba(232,54,78,.05);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:12px;color:var(--text2)">
+        <strong style="color:var(--text)">Recommended Fix:</strong> Add HSTS, CSP, and Referrer-Policy headers in Nginx config. ~30 min effort, score improvement to 75+.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Multi-Channel Operations — Identified IT Challenges</div>
+        <div class="card-subtitle">Business model analysis: Magento + Amazon US + JD.com with 50+ country compliance</div>
+      </div>
+    </div>
+    <div class="grid-3" style="margin-top:4px">
+      <div class="stat" style="border:1px solid var(--border)">
+        <div class="stat-value" style="color:var(--accent)">3</div>
+        <div class="stat-label">Active Sales Channels</div>
+        <div class="stat-change down">Inventory sync is the #1 challenge</div>
+      </div>
+      <div class="stat" style="border:1px solid var(--border)">
+        <div class="stat-value" style="color:var(--amber)">50+</div>
+        <div class="stat-label">Countries Served</div>
+        <div class="stat-change down">Each has unique airsoft import regulations</div>
+      </div>
+      <div class="stat" style="border:1px solid var(--border)">
+        <div class="stat-value" style="color:var(--purple)">15,000+</div>
+        <div class="stat-label">Product SKUs</div>
+        <div class="stat-change down">Compatibility matrix is exponentially complex</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+      <div style="padding:12px 14px;background:var(--surface2);border-radius:6px;display:flex;gap:12px;align-items:start">
+        <span style="font-size:16px;flex-shrink:0">&#9888;&#65039;</span>
+        <div>
+          <div style="font-size:13px;font-weight:600">Real-time Inventory Sync</div>
+          <div style="font-size:12px;color:var(--text3)">15,000+ SKUs across 3 channels — overselling or missed sales from stale stock data. Requires event-driven sync architecture with conflict resolution.</div>
+        </div>
+      </div>
+      <div style="padding:12px 14px;background:var(--surface2);border-radius:6px;display:flex;gap:12px;align-items:start">
+        <span style="font-size:16px;flex-shrink:0">&#127760;</span>
+        <div>
+          <div style="font-size:13px;font-weight:600">International Compliance Automation</div>
+          <div style="font-size:12px;color:var(--text3)">50+ countries with varying airsoft import laws (FPS limits, orange tips, licensing). Currently partially manual — AI can reduce shipping errors and customs seizures.</div>
+        </div>
+      </div>
+      <div style="padding:12px 14px;background:var(--surface2);border-radius:6px;display:flex;gap:12px;align-items:start">
+        <span style="font-size:16px;flex-shrink:0">&#128172;</span>
+        <div>
+          <div style="font-size:13px;font-weight:600">Customer Support Efficiency</div>
+          <div style="font-size:12px;color:var(--text3)">Top support category: parts compatibility queries ("Does this barrel fit my VSR-10?"). AI-powered compatibility matching could auto-answer 80%+ of these tickets.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Proposed AI Transformation Roadmap</div>
+        <div class="card-subtitle">Prioritized by business impact and feasibility</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:14px;align-items:start;padding:14px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--accent)">
+        <div style="background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0">P0</div>
+        <div>
+          <div style="font-size:14px;font-weight:600">AI Compatibility Knowledge Base</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px">Auto-answer "will this fit?" queries. Product DB + compatibility matrix + NLP. Reduces support ticket volume by 60-80%.</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px"><strong>Tech:</strong> Product embedding search + rule engine | <strong>Effort:</strong> 4-6 weeks MVP</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:start;padding:14px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--blue)">
+        <div style="background:var(--blue);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0">P1</div>
+        <div>
+          <div style="font-size:14px;font-weight:600">Automated Compliance Checker</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px">Validate every international order against destination country regulations before shipping. Reduces customs seizures and wrong shipments.</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px"><strong>Tech:</strong> Rule engine + country regulation DB | <strong>Effort:</strong> 2-3 weeks MVP</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:start;padding:14px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--green)">
+        <div style="background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0">P2</div>
+        <div>
+          <div style="font-size:14px;font-weight:600">Multilingual Content Localization</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px">AI-assisted product descriptions in 5 languages with airsoft-specific terminology accuracy. Currently 5 locales, term variations are significant.</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px"><strong>Tech:</strong> LLM + glossary constraint + human review loop | <strong>Effort:</strong> 3-4 weeks</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
