@@ -164,7 +164,7 @@ a{color:var(--blue);text-decoration:none}
 <div id="page-home" class="page active">
   <div class="hero">
     <h1>RedWolf IT Ops Suite</h1>
-    <p>Integrated IT operations platform for RedWolf Airsoft Specialist Ltd. 5 modules. 1 platform. Zero downtime.</p>
+    <p>Integrated IT operations platform for RedWolf Airsoft Specialist Ltd. 7 modules. 1 platform. Zero downtime.</p>
   </div>
 
   <div class="module-cards" style="grid-template-columns:repeat(6,1fr)">
@@ -364,6 +364,35 @@ a{color:var(--blue);text-decoration:none}
       </thead>
       <tbody id="alert-tbody"></tbody>
     </table>
+  </div>
+
+    <div class="card">
+    <div class="card-header">
+      <div class="card-title">Database Status</div>
+      <div class="card-subtitle">MySQL 8.0 — Magento 2 backend database</div>
+    </div>
+    <div class="grid-4" style="margin-bottom:0">
+      <div class="stat">
+        <div class="stat-value" style="color:var(--green)">45/200</div>
+        <div class="stat-label">Active Connections</div>
+        <div class="stat-change up">22.5% utilization</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" style="color:var(--amber)">7</div>
+        <div class="stat-label">Slow Queries (24h)</div>
+        <div class="stat-change down">Threshold: > 2s</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" style="color:var(--blue)">4.2 GB</div>
+        <div class="stat-label">Database Size</div>
+        <div class="stat-change up">catalog_product_* tables: 1.8 GB</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" style="color:var(--green)">OK</div>
+        <div class="stat-label">Replication Status</div>
+        <div class="stat-change up">0s lag — primary-replica healthy</div>
+      </div>
+    </div>
   </div>
 
   <div class="card" style="margin-top:20px">
@@ -618,7 +647,7 @@ a{color:var(--blue);text-decoration:none}
         <div style="display:flex;flex-direction:column;gap:10px">
           <div style="display:flex;gap:10px;align-items:start">
             <span style="color:var(--purple);font-weight:600;min-width:130px">Platform</span>
-            <span>Magento 2 (Adobe Commerce) — confirmed via storefront meta tags, cookie structure, and URL patterns</span>
+            <span>Magento 2 (Adobe Commerce, primary) — Shopify & BigCommerce for channel integration</span>
           </div>
           <div style="display:flex;gap:10px;align-items:start">
             <span style="color:var(--purple);font-weight:600;min-width:130px">Custom Theme</span>
@@ -634,7 +663,7 @@ a{color:var(--blue);text-decoration:none}
           </div>
           <div style="display:flex;gap:10px;align-items:start">
             <span style="color:var(--purple);font-weight:600;min-width:130px">Languages</span>
-            <span>5 locales supported — English, Japanese, Traditional Chinese, Korean, Russian</span>
+            <span>5 locales — English, Japanese, Traditional Chinese, Korean, Russian</span>
           </div>
           <div style="display:flex;gap:10px;align-items:start">
             <span style="color:var(--purple);font-weight:600;min-width:130px">Currencies</span>
@@ -643,6 +672,10 @@ a{color:var(--blue);text-decoration:none}
           <div style="display:flex;gap:10px;align-items:start">
             <span style="color:var(--purple);font-weight:600;min-width:130px">Product Scale</span>
             <span>15,000+ SKUs across 35+ brands — EAV performance is a key concern</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:start">
+            <span style="color:var(--purple);font-weight:600;min-width:130px">Database</span>
+            <span>MySQL 8.0 — product catalog, order management, customer data</span>
           </div>
         </div>
       </div>
