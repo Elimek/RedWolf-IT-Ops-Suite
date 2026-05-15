@@ -1,7 +1,7 @@
 # 🔧 RedWolf IT Operations Suite
 
-> All-in-one IT operations demo for **RedWolf Airsoft Specialist Ltd**
-> Built with **PHP 8.2 + MySQL 8.0** — containerized with **Docker**
+> **红狼信息技术运维套件** / All-in-one IT operations demo for RedWolf Airsoft
+> PHP 8.2 + MySQL 8.0 + Docker + AI
 
 <div align="center">
 
@@ -9,62 +9,58 @@
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker)
 ![AI](https://img.shields.io/badge/AI-Ollama+Qwen-000000?style=flat-square&logo=ollama)
-![Tests](https://img.shields.io/badge/tests-5/5-passing-green?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-5%2F5-passing-green?style=flat-square)
 
 </div>
 
 ---
 
-## 🏗️ What's Inside
+## 🏗️ 包含什么 / What's Inside
 
-| Module | Tech | What it does |
-|--------|------|-------------|
-| 🛒 **Magento Lite** | PHP + MySQL | Product catalog, cart, inventory with `SELECT FOR UPDATE` concurrency |
-| 📊 **Monitoring** | PHP + Cron | Server health dashboard, real-time metrics |
-| 🤖 **AI Agent** | Ollama + Qwen2.5 | Smart ticket classification (85%+ accuracy) |
-| 📝 **Office Tools** | PHP | Employee directory, leave management, company wiki |
+| 模块 / Module | 技术 / Tech | 功能 / What it does |
+|--------------|------------|-------------------|
+| 🛒 **Magento Lite** | PHP + MySQL | 商品目录、购物车、库存并发控制（SELECT FOR UPDATE） |
+| 📊 **监控 / Monitoring** | PHP + Cron | 服务器健康看板，实时指标 |
+| 🤖 **AI Agent** | Ollama + Qwen2.5 | 智能工单分类（85%+ 准确率） |
+| 📝 **办公工具 / Office** | PHP | 员工名录、请假管理、公司 Wiki |
 
 ---
 
-## 🚀 Quick Start
+## 🚀 一键启动 / Quick Start
 
 ```bash
-# One command to run everything
 docker compose up -d
-
-# Or manually:
-php -S localhost:8080 -t public/
+# 然后打开 http://localhost:8080
 ```
-
-Then open http://localhost:8080
 
 ---
 
-## 🧪 Test Suite
+## 🧪 测试 / Tests
 
 ```bash
 ./test.sh
 ```
 
-Covers: service health, database, inventory, AI classification, concurrency.
+覆盖：服务健康、数据库、库存、AI 分类、并发控制
+Covers: service health, database, inventory, AI, concurrency
 
 ---
 
-## 💰 Value
+## 💰 价值 / Value
 
-> Estimated **HK$23,600/month** saved vs. SaaS alternatives  
-> ROI: **~475%**
+> 每月节省约 **HK$23,600**，ROI ~475%
+> Estimated **HK$23,600/month** saved vs. SaaS
 
-See [`VALUE.md`](./VALUE.md) for details.
+详情见 / See [`VALUE.md`](./VALUE.md)
 
 ---
 
-## 📸 Demo
+## 📸 截图 / Screenshots
 
-![Demo Screenshot](https://via.placeholder.com/800x400?text=RedWolf+IT+Ops+Suite)
+*(换上你的真实截图 / Drop your real screenshots here)*
 
 ---
 
 <div align="center">
-  <sub>Interview demo project — built in &lt;3 hours 🚀</sub>
+  <sub>🚀 面试演示项目，3 小时搓出来的 / Interview demo built in <3 hours</sub>
 </div>
